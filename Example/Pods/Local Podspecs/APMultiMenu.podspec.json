@@ -1,0 +1,25 @@
+{
+  "name": "APMultiMenu",
+  "version": "0.1.0",
+  "summary": "A short description of APMultiMenu.",
+  "description": "                       An optional longer description of APMultiMenu\n\n                       * Markdown format.\n                       * Don't worry about the indent, we strip it!\n",
+  "homepage": "https://github.com/<GITHUB_USERNAME>/APMultiMenu",
+  "license": "MIT",
+  "authors": {
+    "aadesh": "aadeshp95@gmail.com"
+  },
+  "source": {
+    "git": "https://github.com/<GITHUB_USERNAME>/APMultiMenu.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "7.0"
+  },
+  "requires_arc": true,
+  "source_files": "Pod/Classes/**/*",
+  "resource_bundles": {
+    "APMultiMenu": [
+      "Pod/Assets/*.png"
+    ]
+  }
+}

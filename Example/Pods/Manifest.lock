@@ -1,0 +1,17 @@
+PODS:
+  - APMultiMenu (0.1.0)
+  - FBSnapshotTestCase (1.5)
+
+DEPENDENCIES:
+  - APMultiMenu (from `../`)
+  - FBSnapshotTestCase
+
+EXTERNAL SOURCES:
+  APMultiMenu:
+    :path: ../
+
+SPEC CHECKSUMS:
+  APMultiMenu: 5dcb9daf04134f7ad17823e9c93525bf2b9816b3
+  FBSnapshotTestCase: e2914fbaabccea1dcc773d6a16b1c24540642488
+
+COCOAPODS: 0.36.0.beta.2

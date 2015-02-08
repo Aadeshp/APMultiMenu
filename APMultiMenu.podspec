@@ -12,16 +12,17 @@ Pod::Spec.new do |s|
   s.version          = "0.1.0"
   s.summary          = "Multi purpose slide out menu. Currently only supports left and right slide out menus"
   s.description      = <<-DESC
-                       An optional longer description of APMultiMenu
+                       APMultiMenu is a view controller container that provides easy to use slide out menu functionality
 
-                       * Markdown format.
-                       * Don't worry about the indent, we strip it!
+                       * Left Slide Out Menu
+                       * Right Slide Out Menu
                        DESC
-  s.homepage         = "https://github.com/<GITHUB_USERNAME>/APMultiMenu"
+  s.homepage         = "https://github.com/aadeshp/APMultiMenu"
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
   s.author           = { "Aadesh Patel" => "aadeshp95@gmail.com" }
   s.source           = { :git => "https://github.com/aadeshp/APMultiMenu.git", :tag => s.version.to_s }
+  #:tag => s.version.to_s 
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.platform     = :ios, '7.0'

@@ -1,6 +1,10 @@
 # APMultiMenu
 
+<<<<<<< HEAD
 [![Build Status](https://travis-ci.org/Aadeshp/APMultiMenu.svg?branch=0.2.1)](https://travis-ci.org/Aadeshp/APMultiMenu)
+=======
+[![Build Status](https://travis-ci.org/Aadeshp/APMultiMenu.svg?branch=master)](https://travis-ci.org/Aadeshp/APMultiMenu)
+>>>>>>> 25c1af09ff4131c29868b67f30fda703460fc2f1
 [![Version](https://img.shields.io/cocoapods/v/APMultiMenu.svg?style=flat)](http://cocoadocs.org/docsets/APMultiMenu)
 [![License](https://img.shields.io/cocoapods/l/APMultiMenu.svg?style=flat)](http://cocoadocs.org/docsets/APMultiMenu)
 [![Platform](https://img.shields.io/cocoapods/p/APMultiMenu.svg?style=flat)](http://cocoadocs.org/docsets/APMultiMenu)

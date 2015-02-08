@@ -19,7 +19,9 @@ UINavigationController *nav = [sb instantiateViewControllerWithIdentifier:@"Nav"
 UIViewController *leftVC = [sb instantiateViewControllerWithIdentifier:@"LeftVC"];
 UIViewController *rightVC = [sb instantiateViewControllerWithIdentifier:@"RightVC"];
     
-APMultiMenu *apmm = [[APMultiMenu alloc] initWithMainViewController:nav leftMenu:leftVC rightMenu:rightVC];
+APMultiMenu *apmm = [[APMultiMenu alloc] initWithMainViewController:nav 
+                                                           leftMenu:leftVC 
+                                                          rightMenu:rightVC];
 self.window.rootViewController = apmm;
 [self.window makeKeyAndVisible];
 ```

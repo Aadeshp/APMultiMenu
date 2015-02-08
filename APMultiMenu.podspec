@@ -9,23 +9,16 @@
 
 Pod::Spec.new do |s|
   s.name             = "APMultiMenu"
-  s.version          = "0.2.1"
+  s.version          = "0.3.0"
   s.summary          = "APMultiMenu is a viewcontroller container for slideout menus"
   s.description      = <<-DESC
                        APMultiMenu is a ViewController Container that currently supports left and right slide out menus
                        DESC
   s.homepage         = "https://github.com/aadeshp/APMultiMenu"
-  # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
-  s.author           = { "aadesh" => "aadeshp95@gmail.com" }
+  s.author           = { "Aadesh Patel" => "aadeshp95@gmail.com" }
   s.source           = { :git => "https://github.com/aadeshp/APMultiMenu.git", :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
-
   s.platform     = :ios, '7.0'
   s.requires_arc = true
-
   s.source_files = 'APMultiMenu'
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
 end

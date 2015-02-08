@@ -7,7 +7,7 @@
 
 ## Usage
 
-#Currently Under Development
+Disclaimer: Project Still Under Development
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 

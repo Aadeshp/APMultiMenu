@@ -36,8 +36,6 @@ To Change Main ViewController From the Slideout Menu:
 [self.menuContainerViewController setMainViewController:[[UINavigationController alloc] initWithRootViewController:(UIViewController *)]];
 ```
 
-## Requirements
-
 ## Installation
 
 APMultiMenu is available through [CocoaPods](http://cocoapods.org). To install

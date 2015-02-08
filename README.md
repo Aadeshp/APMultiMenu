@@ -9,6 +9,21 @@
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
+## How To Use
+
+In AppDelegate.m:
+
+```objective-c
+UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+UINavigationController *nav = [sb instantiateViewControllerWithIdentifier:@"Nav"];
+UIViewController *leftVC = [sb instantiateViewControllerWithIdentifier:@"LeftVC"];
+UIViewController *rightVC = [sb instantiateViewControllerWithIdentifier:@"RightVC"];
+    
+APMultiMenu *apmm = [[APMultiMenu alloc] initWithMainViewController:nav leftMenu:leftVC rightMenu:rightVC];
+self.window.rootViewController = apmm;
+[self.window makeKeyAndVisible];
+```
+
 ## Requirements
 
 ## Installation

@@ -26,6 +26,16 @@ self.window.rootViewController = apmm;
 [self.window makeKeyAndVisible];
 ```
 
+To Change Main ViewController From the Slideout Menu:
+
+```objective-c
+//Option 1 - Plain ViewController
+[self.menuContainerViewController setMainViewController:(UIViewController *)]
+
+//Option 2 - UINavgationController
+[self.menuContainerViewController setMainViewController:[[UINavigationController alloc] initWithRootViewController:(UIViewController *)]];
+```
+
 ## Requirements
 
 ## Installation

@@ -10,12 +10,9 @@
 Pod::Spec.new do |s|
   s.name             = "APMultiMenu"
   s.version          = "0.1.0"
-  s.summary          = "A short description of APMultiMenu."
+  s.summary          = "APMultiMenu is a viewcontroller container for slideout menus"
   s.description      = <<-DESC
-                       An optional longer description of APMultiMenu
-
-                       * Markdown format.
-                       * Don't worry about the indent, we strip it!
+                       APMultiMenu is a ViewController Container that currently supports left and right slide out menus
                        DESC
   s.homepage         = "https://github.com/aadeshp/APMultiMenu"
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
@@ -27,7 +24,7 @@ Pod::Spec.new do |s|
   s.platform     = :ios, '7.0'
   s.requires_arc = true
 
-  s.source_files = 'Pod/Classes/**/*'
+  s.source_files = 'APMultiMenu'
   s.resource_bundles = {
     'APMultiMenu' => ['Pod/Assets/*.png']
   }

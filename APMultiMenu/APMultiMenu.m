@@ -18,9 +18,6 @@
 
 @interface APMultiMenu()
 
-@property (nonatomic) BOOL showMenu;
-@property (nonatomic) CGFloat gestureVelocity;
-
 @property (nonatomic, strong) UIViewController *mainViewController;
 @property (nonatomic, strong) UIViewController *leftMenuViewController;
 @property (nonatomic, strong) UIViewController *rightMenuViewController;

@@ -4,7 +4,7 @@
 //
 //  Created by Aadesh Patel on 2/6/15.
 //  Copyright (c) 2015 Aadesh Patel. All rights reserved.
-// TEST MESSAGE
+//
 
 #import "APMultiMenu.h"
 
@@ -18,16 +18,14 @@
 
 @interface APMultiMenu()
 
-@property (nonatomic) BOOL showMenu;
-@property (nonatomic) CGFloat gestureVelocity;
+@property (nonatomic) BOOL showPanel;
+@property (nonatomic) CGFloat translationLimit;
 
 @property (nonatomic, strong) UIViewController *mainViewController;
 @property (nonatomic, strong) UIViewController *leftMenuViewController;
 @property (nonatomic, strong) UIViewController *rightMenuViewController;
 
 @property (nonatomic, strong) UIView *mainView;
-
-@property (nonatomic) UIViewController *menuContainerView;
 
 @end
 
@@ -37,7 +35,6 @@
                                   leftMenu:(UIViewController *)leftMenuViewController
                                  rightMenu:(UIViewController *)rightMenuViewController {
     if (self = [super init]) {
-        //mainViewController Required
         NSParameterAssert(mainViewController);
         
         _mainViewController = mainViewController;
@@ -131,6 +128,29 @@
         @throw [NSException exceptionWithName:@"NSInvalidArgumentException" reason:@"Invalid Menu Type" userInfo:nil];
 }
 
+- (void)moveMainViewToCenter {
+    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+        _mainView.frame = CGRectMake(0, 0, _mainView.frame.size.width, _mainView.frame.size.height);
+    } completion:^(BOOL finished) {
+        self.leftMenuViewController.view.tag = CLOSED_TAG;
+        self.rightMenuViewController.view.tag = CLOSED_TAG;
+    }];
+}
+
+- (void)openLeftMenu {
+    if (!_leftMenuViewController)
+        return;
+    
+    [self.view sendSubviewToBack:self.rightMenuViewController.view];
+    
+    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+        _mainView.frame = CGRectMake(MENU_WIDTH, 0, _mainView.frame.size.width, _mainView.frame.size.height);
+    } completion:^(BOOL finished) {
+        self.leftMenuViewController.view.tag = OPEN_TAG;
+        self.rightMenuViewController.view.tag = CLOSED_TAG;
+    }];
+}
+
 - (void)toggleLeftMenu {
     if (!_leftMenuViewController)
         return;
@@ -151,6 +171,19 @@
             self.leftMenuViewController.view.tag = OPEN_TAG;
         else
             self.leftMenuViewController.view.tag = CLOSED_TAG;
+    }];
+}
+
+- (void)openRightMenu {
+    if (!_rightMenuViewController)
+        return;
+    
+    [self.view sendSubviewToBack:self.leftMenuViewController.view];
+    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+        _mainView.frame = CGRectMake(-1 * MENU_WIDTH, 0, _mainView.frame.size.width, _mainView.frame.size.height);
+    } completion:^(BOOL finished) {
+        self.rightMenuViewController.view.tag = OPEN_TAG;
+        self.leftMenuViewController.view.tag = CLOSED_TAG;
     }];
 }
 
@@ -197,22 +230,57 @@
 }
 
 - (void)handlePanGesture:(UIPanGestureRecognizer *)sender {
-    /*    CGPoint translatedPoint = [sender translationInView:_mainView];
-     CGPoint velocity = [sender velocityInView:[sender view]];*/
+    CGPoint translatedPoint = [sender translationInView:self.view];
+    CGPoint velocity = [sender velocityInView:[sender view]];
     
     if (sender.state == UIGestureRecognizerStateBegan) {
         UIView *childView = nil;
+        
+        if (velocity.x > 0) {
+            if (_rightMenuViewController.view.tag == CLOSED_TAG) {
+                childView = self.rightMenuViewController.view;
+                // _leftMenuViewController.view.tag = OPEN_TAG;
+            }
+        } else {
+            if (_leftMenuViewController.view.tag == CLOSED_TAG) {
+                childView = self.leftMenuViewController.view;
+                //_rightMenuViewController.view.tag = OPEN_TAG;
+            }
+        }
         
         [self.view sendSubviewToBack:childView];
         [[sender view] bringSubviewToFront:[sender view]];
     }
     
     if (sender.state == UIGestureRecognizerStateEnded) {
-        
+        if (!_showPanel)
+            [self moveMainViewToCenter];
+        else {
+            if (velocity.x > 0) {
+                if (self.rightMenuViewController.view.tag == OPEN_TAG)
+                    [self toggleRightMenu];
+                else if (self.leftMenuViewController.view.tag == CLOSED_TAG)
+                    [self toggleLeftMenu];
+            } else {
+                if (self.leftMenuViewController.view.tag == OPEN_TAG)
+                    [self toggleLeftMenu];
+                else if (self.rightMenuViewController.view.tag == CLOSED_TAG)
+                    [self toggleRightMenu];
+            }
+        }
     }
     
     if (sender.state == UIGestureRecognizerStateChanged) {
+        _showPanel = abs([sender view].center.x - _mainView.frame.size.width / 2) > _mainView.frame.size.width / 2;
         
+        _translationLimit = sender.view.center.x - (self.view.frame.size.width / 2);
+        if ((_translationLimit >= MENU_WIDTH && velocity.x > 0)
+            || (_translationLimit <= -1 * MENU_WIDTH && velocity.x < 0))
+            [sender view].center = CGPointMake(sender.view.center.x, sender.view.center.y);
+        else
+            [sender view].center = CGPointMake([sender view].center.x + translatedPoint.x, [sender view].center.y);
+        
+        [sender setTranslation:CGPointMake(0, 0) inView:self.view];
     }
 }
 

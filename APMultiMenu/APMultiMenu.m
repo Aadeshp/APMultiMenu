@@ -197,8 +197,8 @@
 }
 
 - (void)handlePanGesture:(UIPanGestureRecognizer *)sender {
-    CGPoint translatedPoint = [sender translationInView:_mainView];
-    CGPoint velocity = [sender velocityInView:[sender view]];
+/*    CGPoint translatedPoint = [sender translationInView:_mainView];
+    CGPoint velocity = [sender velocityInView:[sender view]];*/
     
     if (sender.state == UIGestureRecognizerStateBegan) {
         UIView *childView = nil;

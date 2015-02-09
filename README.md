@@ -26,7 +26,15 @@ self.window.rootViewController = apmm;
 [self.window makeKeyAndVisible];
 ```
 
-## Requirements
+To Change Main ViewController From the Slideout Menu:
+
+```objective-c
+//Option 1 - Plain ViewController
+[self.menuContainerViewController setMainViewController:(UIViewController *)]
+
+//Option 2 - UINavgationController
+[self.menuContainerViewController setMainViewController:[[UINavigationController alloc] initWithRootViewController:(UIViewController *)]];
+```
 
 ## Installation
 
@@ -34,6 +42,14 @@ APMultiMenu is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
     pod "APMultiMenu"
+    
+---OR---
+
+You can clone the repo:
+```
+$ git clone https://github.com/Aadeshp/APMultiMenu.git
+```
+And add the directory ```APMultiMenu/``` to your project
 
 ## Author
 

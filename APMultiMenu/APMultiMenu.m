@@ -142,6 +142,12 @@
     UIView *view = viewController.view;
     view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     view.autoresizesSubviews = YES;
+    
+    if (menuType == APMultiMenuTypeLeftMenu)
+        view.layer.anchorPoint = CGPointMake(0, 0);
+    else
+        view.layer.anchorPoint = CGPointMake(1, 0);
+    
     view.frame = [self getFrameFor:menuType];
     view.clipsToBounds = YES;
     [view sizeThatFits:CGSizeMake(MENU_WIDTH, self.view.frame.size.height)];

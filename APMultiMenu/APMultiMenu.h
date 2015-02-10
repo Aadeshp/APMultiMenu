@@ -34,5 +34,3 @@ typedef enum {
 - (void)toggleRightMenu;
 
 @end
-
-

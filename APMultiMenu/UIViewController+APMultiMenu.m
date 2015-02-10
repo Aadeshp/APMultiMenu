@@ -11,9 +11,22 @@
 
 @implementation UIViewController (APMultiMenu)
 
-@dynamic menuContainerViewController;
+//@dynamic menuContainerViewController;
 
-- (APMultiMenu *)menuContainerViewController {
+- (APMultiMenu *)sideMenuContainerViewController {
+    UIViewController *container = self.parentViewController;
+
+    while (container) {
+        if ([container isKindOfClass:[APMultiMenu class]])
+            return (APMultiMenu *)container;
+        else if (container.parentViewController != container && container.parentViewController)
+            container = container.parentViewController;
+        else
+            container = nil;
+    }
+
+    return nil;
+    /*
     id containerView = self;
     while (![containerView isKindOfClass:[APMultiMenu class]] && containerView) {
         if ([containerView respondsToSelector:@selector(parentViewController)])
@@ -21,7 +34,7 @@
         if ([containerView respondsToSelector:@selector(splitViewController)] && !containerView)
             containerView = [containerView splitViewController];
     }
-    return containerView;
+    return containerView;*/
 }
 
 - (IBAction)toggleLeftMenu:(id)sender {

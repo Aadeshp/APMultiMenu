@@ -86,7 +86,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    //LeftMenuViewController and RightMenuViewController Setup
     if (self.leftMenuViewController) {
         self.leftMenuViewController.view.tag = CLOSED_TAG;
         [self addViewController:self.leftMenuViewController toView:self.view];
@@ -165,19 +164,6 @@
 }
 
 #pragma mark - Transitions
-
-- (void)moveMainViewToCenter {
-    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-        _mainView.frame = CGRectMake(0, 0, _mainView.frame.size.width, _mainView.frame.size.height);
-        /*if (self.leftMenuViewController.view.frame.origin.x != (-1 * MENU_INDENT))
-         self.leftMenuViewController.view.frame = CGRectMake(-1 * MENU_INDENT, 0, self.leftMenuViewController.view.frame.size.width, self.leftMenuViewController.view.frame.size.height);
-         else if (self.rightMenuViewController.view.frame.origin.x != (self.view.frame.size.width - MENU_WIDTH + MENU_INDENT))
-         self.rightMenuViewController.view.frame = CGRectMake(self.view.frame.size.width - MENU_WIDTH + MENU_INDENT, 0, self.rightMenuViewController.view.frame.size.width, self.rightMenuViewController.view.frame.size.height);*/
-    } completion:^(BOOL finished) {
-        self.leftMenuViewController.view.tag = CLOSED_TAG;
-        self.rightMenuViewController.view.tag = CLOSED_TAG;
-    }];
-}
 
 - (void)openMenu:(APMultiMenuType)menuType {
     CGFloat main_xPos;
@@ -346,67 +332,6 @@
                 [self openMenu:APMultiMenuTypeRightMenu];
         }
     }
-    /*CGPoint translatedPoint = [sender translationInView:self.view];
-     CGPoint velocity = [sender velocityInView:[sender view]];
-     
-     if (sender.state == UIGestureRecognizerStateBegan) {
-     UIView *childView = nil;
-     
-     if (velocity.x > 0) {
-     if (_rightMenuViewController.view.tag == CLOSED_TAG) {
-     childView = self.rightMenuViewController.view;
-     }
-     } else {
-     if (_leftMenuViewController.view.tag == CLOSED_TAG) {
-     childView = self.leftMenuViewController.view;
-     }
-     }
-     
-     [self.view sendSubviewToBack:childView];
-     [[sender view] bringSubviewToFront:[sender view]];
-     [self.view endEditing:YES];
-     }
-     
-     if (sender.state == UIGestureRecognizerStateEnded) {
-     if (!_showPanel)
-     [self moveMainViewToCenter];
-     else {
-     if (velocity.x > 0) {
-     if (self.rightMenuViewController.view.tag == OPEN_TAG)
-     [self closeMenu:APMultiMenuTypeRightMenu];
-     else if (self.leftMenuViewController.view.tag == CLOSED_TAG)
-     [self openMenu:APMultiMenuTypeLeftMenu];
-     } else if (velocity.x < 0) {
-     if (self.leftMenuViewController.view.tag == OPEN_TAG)
-     [self closeMenu:APMultiMenuTypeLeftMenu];
-     else if (self.rightMenuViewController.view.tag == CLOSED_TAG)
-     [self openMenu:APMultiMenuTypeRightMenu];
-     }
-     }
-     }
-     
-     if (sender.state == UIGestureRecognizerStateChanged) {
-     _showPanel = abs([sender view].center.x - _mainView.frame.size.width / 2) > 0;
-     
-     _translationLimit = sender.view.center.x - (self.view.frame.size.width / 2);
-     NSLog(@"%f", sender.view.center.x);
-     
-     if ((_translationLimit >= MENU_WIDTH && velocity.x > 0)
-     || (_translationLimit <= -1 * MENU_WIDTH && velocity.x < 0))
-     sender.view.center = CGPointMake(sender.view.center.x, sender.view.center.y);
-     else {
-     sender.view.center = CGPointMake([sender view].center.x + translatedPoint.x, [sender view].center.y);
-     
-     if ((velocity.x > 0 && self.rightMenuViewController.view.tag == CLOSED_TAG)
-     || (velocity.x < 0 && self.leftMenuViewController.view.tag == OPEN_TAG))
-     _leftMenuViewController.view.frame = CGRectMake(_leftMenuViewController.view.frame.origin.x + translatedPoint.x / MENU_INDENT_DIV, 0, _leftMenuViewController.view.frame.size.width, _leftMenuViewController.view.frame.size.height);
-     else if ((velocity.x < 0 && self.leftMenuViewController.view.tag == CLOSED_TAG)
-     || (velocity.x > 0 && self.rightMenuViewController.view.tag == OPEN_TAG))
-     _rightMenuViewController.view.frame = CGRectMake(_rightMenuViewController.view.frame.origin .x + translatedPoint.x / MENU_INDENT_DIV, 0, _rightMenuViewController.view.frame.size.width, _rightMenuViewController.view.frame.size.height);
-     }
-     
-     [sender setTranslation:CGPointMake(0, 0) inView:self.view];
-     }*/
 }
 
 @end

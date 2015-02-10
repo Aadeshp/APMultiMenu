@@ -11,8 +11,6 @@
 
 @implementation UIViewController (APMultiMenu)
 
-//@dynamic menuContainerViewController;
-
 - (APMultiMenu *)sideMenuContainerViewController {
     UIViewController *container = self.parentViewController;
 
@@ -38,11 +36,11 @@
 }
 
 - (IBAction)toggleLeftMenu:(id)sender {
-    [self.menuContainerViewController toggleLeftMenu];
+    [self.sideMenuContainerViewController toggleLeftMenu];
 }
 
 - (IBAction)toggleRightMenu:(id)sender {
-    [self.menuContainerViewController toggleRightMenu];
+    [self.sideMenuContainerViewController toggleRightMenu];
 }
 
 @end

@@ -35,7 +35,6 @@
 
 @implementation APMultiMenu
 
-
 #pragma mark - Constructors
 
 - (instancetype)initWithMainViewController:(UIViewController *)mainViewController

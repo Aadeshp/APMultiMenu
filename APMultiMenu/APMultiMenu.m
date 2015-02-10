@@ -290,7 +290,6 @@
         CGPoint newCenter = CGPointMake(sender.view.center.x + translation.x, sender.view.center.y);
         
         _xPos = newCenter.x - (self.view.frame.size.width / 2);
-        NSLog(@"%f", velocity.x);
         
         if (((velocity.x > 0)
              && (_leftMenuViewController.view.tag == CLOSED_TAG && (_xPos <= MENU_WIDTH && _xPos >= 0)))

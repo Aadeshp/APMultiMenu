@@ -24,15 +24,6 @@
     }
 
     return nil;
-    /*
-    id containerView = self;
-    while (![containerView isKindOfClass:[APMultiMenu class]] && containerView) {
-        if ([containerView respondsToSelector:@selector(parentViewController)])
-            containerView = [containerView parentViewController];
-        if ([containerView respondsToSelector:@selector(splitViewController)] && !containerView)
-            containerView = [containerView splitViewController];
-    }
-    return containerView;*/
 }
 
 - (IBAction)toggleLeftMenu:(id)sender {

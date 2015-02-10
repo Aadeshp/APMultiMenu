@@ -12,7 +12,7 @@
 
 @interface UIViewController (APMultiMenu)
 
-@property (nonatomic, strong) APMultiMenu *sideMenuContainerViewController;
+@property (nonatomic, strong, readonly) APMultiMenu *sideMenuContainerViewController;
 
 - (IBAction)toggleLeftMenu:(id)sender;
 - (IBAction)toggleRightMenu:(id)sender;

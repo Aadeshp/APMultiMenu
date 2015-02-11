@@ -12,30 +12,34 @@
 #define MENU_INDENT (260/5)
 #define MENU_INDENT_DIV 5
 
-#define SHADOW_RADIUS 4.0f
-#define SHADOW_OPACITY 0.8f
-#define ANIMATION_DURATION 0.4
-
 #define CLOSED_TAG 0
 #define OPEN_TAG 1
 
 @interface APMultiMenu()
 
-@property (nonatomic) CGFloat xPos;
-@property (nonatomic) BOOL showPanel;
-@property (nonatomic) CGFloat translationLimit;
+@property (nonatomic, assign, readwrite) CGFloat xPos;
+@property (nonatomic, assign, readwrite) CGFloat translationLimit;
 
 @property (nonatomic, strong) UIViewController *mainViewController;
 @property (nonatomic, strong) UIViewController *leftMenuViewController;
 @property (nonatomic, strong) UIViewController *rightMenuViewController;
 
 @property (nonatomic, strong) UIView *mainView;
+@property (nonatomic, strong) UIView *leftMenu;
+@property (nonatomic, strong) UIView *rightMenu;
 
 @end
 
 @implementation APMultiMenu
 
 #pragma mark - Constructors
+
+- (instancetype)init {
+    if (self = [super init])
+        [self defaultInit];
+
+    return self;
+}
 
 - (instancetype)initWithMainViewController:(UIViewController *)mainViewController
                                   leftMenu:(UIViewController *)leftMenuViewController {
@@ -50,16 +54,57 @@
 - (instancetype)initWithMainViewController:(UIViewController *)mainViewController
                                   leftMenu:(UIViewController *)leftMenuViewController
                                  rightMenu:(UIViewController *)rightMenuViewController {
-    if (self = [super init]) {
+    if (self = [self init]) {
         NSParameterAssert(mainViewController);
         
         _mainViewController = mainViewController;
         _leftMenuViewController = leftMenuViewController;
         _rightMenuViewController = rightMenuViewController;
-        _mainView = [[UIView alloc] init];
     }
     
     return self;
+}
+
+- (void)defaultInit {
+    _mainView = [[UIView alloc] init];
+    
+    self.animationDuration = 0.4f;
+    
+    self.mainViewShadowEnabled = NO;
+    self.mainViewShadowRadius = 4.0f;
+    self.mainViewShadowOpacity = 0.8f;
+    self.mainViewShadowColor = [UIColor blackColor];
+    self.mainViewShadowOffset = CGSizeMake(1, 1);
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    if (self.leftMenuViewController) {
+        _leftMenu = self.leftMenuViewController.view;
+        _leftMenu.tag = CLOSED_TAG;
+        [self addViewController:self.leftMenuViewController toView:self.view];
+        [self resizeView:self.leftMenuViewController menuType:APMultiMenuTypeLeftMenu];
+    }
+    
+    if (self.rightMenuViewController) {
+        _rightMenu = self.rightMenuViewController.view;
+        _rightMenu.tag = CLOSED_TAG;
+        [self addViewController:self.rightMenuViewController toView:self.view];
+        [self resizeView:self.rightMenuViewController menuType:APMultiMenuTypeRightMenu];
+    }
+    
+    self.view.autoresizesSubviews = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    
+    [self.view addSubview:_mainView];
+    _mainView.frame = self.view.bounds;
+    _mainView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    
+    self.mainViewController.view.frame = self.view.bounds;
+    [self addViewController:self.mainViewController toView:_mainView];
+
+    if (_mainViewShadowEnabled)
+        [self setUpShadowOnMainView];
 }
 
 #pragma mark - Change MainViewController
@@ -82,39 +127,14 @@
     }];
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
-    if (self.leftMenuViewController) {
-        self.leftMenuViewController.view.tag = CLOSED_TAG;
-        [self addViewController:self.leftMenuViewController toView:self.view];
-        [self resizeView:self.leftMenuViewController menuType:APMultiMenuTypeLeftMenu];
-    }
-    
-    if (self.rightMenuViewController) {
-        self.rightMenuViewController.view.tag = CLOSED_TAG;
-        [self addViewController:self.rightMenuViewController toView:self.view];
-        [self resizeView:self.rightMenuViewController menuType:APMultiMenuTypeRightMenu];
-    }
-    
-    [_mainView addGestureRecognizer:[self panGestureRecognizer]];
-    self.view.autoresizesSubviews = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    
-    [self.view addSubview:_mainView];
-    _mainView.frame = self.view.bounds;
-    _mainView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    [self addShadowToMainView];
-    
-    self.mainViewController.view.frame = self.view.bounds;
-    [self addViewController:self.mainViewController toView:_mainView];
-}
+#pragma mark - Shadow On Main View
 
-- (void)addShadowToMainView {
+- (void)setUpShadowOnMainView {
     CALayer *layer = _mainView.layer;
-    layer.shadowOffset = CGSizeMake(1, 1);
-    layer.shadowColor = [[UIColor blackColor] CGColor];
-    layer.shadowRadius = SHADOW_RADIUS;
-    layer.shadowOpacity = SHADOW_OPACITY;
+    layer.shadowOffset = self.mainViewShadowOffset;
+    layer.shadowColor = [self.mainViewShadowColor CGColor];
+    layer.shadowRadius = self.mainViewShadowRadius;
+    layer.shadowOpacity = self.mainViewShadowOpacity;
     layer.shadowPath = [[UIBezierPath bezierPathWithRect:layer.bounds] CGPath];
 }
 
@@ -173,22 +193,26 @@
         if (!_leftMenuViewController)
             return;
         
-        [self.view sendSubviewToBack:self.rightMenuViewController.view];
+        [self.view sendSubviewToBack:_rightMenu.view];
         main_xPos = MENU_WIDTH;
         [blocks addObject:^{
-            _leftMenuViewController.view.frame = CGRectMake(0, 0, _leftMenuViewController.view.frame.size.width, _leftMenuViewController.view.frame.size.height);
+            _leftMenu.frame = CGRectMake(0, 0, _leftMenu.frame.size.width, _leftMenu.frame.size.height);
         }];
-        self.leftMenuViewController.view.tag = OPEN_TAG;
+        _leftMenu.tag = OPEN_TAG;
+        
+        [self isDelegateRevealMenuCalledForSideMenu:self.leftMenuViewController];
     } else {
         if (!_rightMenuViewController)
             return;
         
-        [self.view sendSubviewToBack:self.leftMenuViewController.view];
+        [self.view sendSubviewToBack:_leftMenu];
         main_xPos = -1 * MENU_WIDTH;
         [blocks addObject:^{
-            _rightMenuViewController.view.frame = CGRectMake(self.view.frame.size.width - MENU_WIDTH, 0, _rightMenuViewController.view.frame.size.width, _rightMenuViewController.view.frame.size.height);
+            _rightMenu.frame = CGRectMake(self.view.frame.size.width - MENU_WIDTH, 0, _rightMenu.frame.size.width, _rightMenu.frame.size.height);
         }];
-        self.rightMenuViewController.view.tag = OPEN_TAG;
+        _rightMenu.tag = OPEN_TAG;
+
+        [self isDelegateRevealMenuCalledForSideMenu:self.rightMenuViewController];
     }
     
     [blocks addObject:^{
@@ -208,20 +232,24 @@
         if (!_leftMenuViewController)
             return;
         
-        [self.view sendSubviewToBack:self.rightMenuViewController.view];
+        [self.view sendSubviewToBack:_rightMenu];
         [blocks addObject:^{
-            _leftMenuViewController.view.frame = CGRectMake(-1 * MENU_INDENT, 0, _leftMenuViewController.view.frame.size.width, _leftMenuViewController.view.frame.size.height);
+            _leftMenu.frame = CGRectMake(-1 * MENU_INDENT, 0, _leftMenu.frame.size.width, _leftMenu.frame.size.height);
         }];
-        self.leftMenuViewController.view.tag = CLOSED_TAG;
+        _leftMenu.tag = CLOSED_TAG;
+    
+        [self isDelegateHideMenuCalledForSideMenu:self.leftMenuViewController];
     } else {
         if (!_rightMenuViewController)
             return;
         
-        [self.view sendSubviewToBack:self.leftMenuViewController.view];
+        [self.view sendSubviewToBack:_leftMenu];
         [blocks addObject:^{
-            _rightMenuViewController.view.frame = CGRectMake(self.view.frame.size.width - MENU_WIDTH + MENU_INDENT, 0, _rightMenuViewController.view.frame.size.width, _rightMenuViewController.view.frame.size.height);
+            _rightMenu.frame = CGRectMake(self.view.frame.size.width - MENU_WIDTH + MENU_INDENT, 0, _rightMenu.frame.size.width, _rightMenu.frame.size.height);
         }];
-        self.rightMenuViewController.view.tag = CLOSED_TAG;
+        _rightMenu.tag = CLOSED_TAG;
+
+        [self isDelegateHideMenuCalledForSideMenu:self.rightMenuViewController];
     }
     
     [blocks addObject:^{
@@ -234,10 +262,20 @@
     }];
 }
 
+- (void)isDelegateRevealMenuCalledForSideMenu:(UIViewController *)sideMenuViewController {
+    if ([self.delegate conformsToProtocol:@protocol(APMultiMenuDelegate)] && [self.delegate respondsToSelector:@selector(sideMenu:didRevealSideMenu:)])
+        [self.delegate sideMenu:self didRevealSideMenu:sideMenuViewController];
+}
+
+- (void)isDelegateHideMenuCalledForSideMenu:(UIViewController *)sideMenuViewController {
+    if ([self.delegate conformsToProtocol:@protocol(APMultiMenuDelegate)] && [self.delegate respondsToSelector:@selector(sideMenu:didHideSideMenu:)])
+        [self.delegate sideMenu:self didHideSideMenu:sideMenuViewController];
+}
+
 #pragma mark - Slide Out Menu Toggle
 
 - (void)toggleLeftMenu {
-    switch (self.leftMenuViewController.view.tag) {
+    switch (_leftMenu.tag) {
         case CLOSED_TAG:
             [self openMenu:APMultiMenuTypeLeftMenu];
             break;
@@ -248,7 +286,7 @@
 }
 
 - (void)toggleRightMenu {
-    switch (self.rightMenuViewController.view.tag) {
+    switch (_rightMenu.tag) {
         case CLOSED_TAG:
             [self openMenu:APMultiMenuTypeRightMenu];
             break;
@@ -259,6 +297,10 @@
 }
 
 #pragma mark - UIGestureRecognizer Pan
+
+- (void)addPanGestureToMenu {
+    [_mainView addGestureRecognizer:[self panGestureRecognizer]];
+}
 
 - (UIPanGestureRecognizer *)panGestureRecognizer {
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGesture:)];
@@ -274,11 +316,11 @@
     
     if (sender.state == UIGestureRecognizerStateBegan) {
         if (velocity.x > 0) {
-            if (_rightMenuViewController.view.tag == CLOSED_TAG)
-                [self.view sendSubviewToBack:_rightMenuViewController.view];
+            if (_rightMenu.tag == CLOSED_TAG)
+                [self.view sendSubviewToBack:_rightMenu];
         } else {
-            if (_leftMenuViewController.view.tag == CLOSED_TAG)
-                [self.view sendSubviewToBack:_leftMenuViewController.view];
+            if (_leftMenu.tag == CLOSED_TAG)
+                [self.view sendSubviewToBack:_leftMenu];
         }
         
         [self.view endEditing:YES];
@@ -289,31 +331,17 @@
         CGPoint newCenter = CGPointMake(sender.view.center.x + translation.x, sender.view.center.y);
         
         _xPos = newCenter.x - (self.view.frame.size.width / 2);
-        
-        if (((velocity.x > 0)
-             && (_leftMenuViewController.view.tag == CLOSED_TAG && (_xPos <= MENU_WIDTH && _xPos >= 0)))
-            || ((velocity.x < 0)
-                && (_leftMenuViewController.view.tag == OPEN_TAG || (_xPos <= MENU_WIDTH && _xPos >= 0))))
-        {
-            _leftMenuViewController.view.frame = CGRectMake(_leftMenuViewController.view.frame.origin.x + translation.x / MENU_INDENT_DIV, 0, _leftMenuViewController.view.frame.size.width, _leftMenuViewController.view.frame.size.height);
-        }
-        
-        if (((velocity.x < 0)
-             && (_rightMenuViewController.view.tag == CLOSED_TAG && (_xPos >= (-1 * MENU_WIDTH) && _xPos < 0)))
-            || ((velocity.x > 0)
-                && (_rightMenuViewController.view.tag == OPEN_TAG || (_xPos >= (-1 * MENU_WIDTH) && _xPos < 0)))) {
-                _rightMenuViewController.view.frame = CGRectMake(_rightMenuViewController.view.frame.origin.x + translation.x / MENU_INDENT_DIV, 0, _rightMenuViewController.view.frame.size.width, _rightMenuViewController.view.frame.size.height);
-            }
-        
-        if (((velocity.x > 0)
-             && ((_leftMenuViewController.view.tag == CLOSED_TAG && _xPos <= MENU_WIDTH)
-                 || _rightMenuViewController.view.tag == OPEN_TAG))
-            || ((velocity.x < 0)
-                && ((_rightMenuViewController.view.tag == CLOSED_TAG && _xPos >= (-1 * MENU_WIDTH))
-                    || _leftMenuViewController.view.tag == OPEN_TAG)))
-        {
-            sender.view.center = newCenter;
-            [sender setTranslation:CGPointZero inView:self.view];
+
+        if (velocity.x > 0) {
+            if (_leftMenu.tag == CLOSED_TAG && (_xPos <= MENU_WIDTH && _xPos >= 0))
+                [self translateLeftMenu:translation recognizer:sender withNewCenter:newCenter];
+            else if (_rightMenu.tag == OPEN_TAG || (_xPos >= (-1 * MENU_WIDTH) && _xPos < 0))
+                [self translateRightMenu:translation recognizer:sender withNewCenter:newCenter];
+        } else {
+            if (_leftMenu.tag == OPEN_TAG || (_xPos <= MENU_WIDTH && _xPos >= 0))
+                [self translateLeftMenu:translation recognizer:sender withNewCenter:newCenter];
+            else if (_rightMenu.tag == CLOSED_TAG && (_xPos >= (-1 * MENU_WIDTH) && _xPos < 0))
+                [self translateRightMenu:translation recognizer:sender withNewCenter:newCenter];
         }
     }
     
@@ -330,6 +358,26 @@
                 [self openMenu:APMultiMenuTypeRightMenu];
         }
     }
+}
+
+- (void)translateLeftMenu:(CGPoint)translation 
+               recognizer:(UIPanGestureRecognizer *)recognizer
+            withNewCenter:(CGPoint)newCenter 
+{
+    _leftMenu.frame = CGRectMake(_leftMenu.frame.origin.x + translation.x / MENU_INDENT_DIV, 0, _leftMenu.frame.size.width, _leftMenu.frame.size.height);
+
+    sender.view.center = newCenter;
+    [sender setTranslation:CGPointZero inView:self.view];
+}
+
+- (void)translateRightMenu:(CGPoint)translation
+                recognizer:(UIPanGestureRecognizer *)recognizer
+             withNewCenter:(CGPoint)newCenter
+{
+    _rightMenu.frame = CGRectMake(_rightMenu.frame.origin.x + translation.x / MENU_INDENT_DIV, 0, _rightMenu.frame.size.width, _rightMenu.frame.size.height);
+
+    sender.view.center = newCenter;
+    [sender setTranslation:CGPointZero inView:self.view];
 }
 
 @end

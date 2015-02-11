@@ -11,26 +11,45 @@
 
 @protocol APMultiMenuDelegate <NSObject>
 
-@required
-- (void)toggleLeftMenu;
+@optional
+- (void)sideMenu:(APMultiMenu *)sideMenu didRevealSideMenu:(UIViewController *)sideMenuViewController;
+- (void)sideMenu:(APMultiMenu *)sideMenu didHideSideMenu:(UIViewController *)sideMenuViewController;
 
 @end
 
-typedef enum {
+typedef NS_ENUM(NSInteger, APMultiMenuType) {
     APMultiMenuTypeLeftMenu,
     APMultiMenuTypeRightMenu
-} APMultiMenuType;
+};
 
 @interface APMultiMenu : UIViewController <UIGestureRecognizerDelegate, APMultiMenuDelegate>
 
 @property (nonatomic, weak) id<APMultiMenuDelegate> delegate;
+
+@property (nonatomic, assign) BOOL mainViewShadowEnabled;
+@property (nonatomic, assign) CGFloat mainViewShadowRadius;
+@property (nonatomic, assign) CGFloat mainViewShadowOpacity;
+@property (nonatomic, assign) UIColor mainViewShadowColor;
+
+@property (nonatomic, assign) CGFloat animationDuration;
+
+//Initializations
+- (instancetype)init;
+- (instancetype)initWithMainViewController:(UIViewController *)mainViewController
+                                  leftMenu:(UIViewController *)leftMenuViewController;
+- (instancetype)initWithMainViewController:(UIViewController *)mainViewController
+                                 rightMenu:(UIViewController *)rightMenuViewController;
 - (instancetype)initWithMainViewController:(UIViewController *)mainViewController
                                   leftMenu:(UIViewController *)leftMenuViewController
                                  rightMenu:(UIViewController *)rightMenuViewController;
 
+//Change TopViewController
 - (void)setMainViewController:(UIViewController *)mainViewController;
 
+//Open/Close Left Side Menu
 - (void)toggleLeftMenu;
+
+//Open/Close Right Side Menu
 - (void)toggleRightMenu;
 
 @end

@@ -298,7 +298,7 @@
 
 #pragma mark - UIGestureRecognizer Pan
 
-- (void)addPanGestureToMenu {
+- (void)enablePanGesture {
     [_mainView addGestureRecognizer:[self panGestureRecognizer]];
 }
 
@@ -364,6 +364,9 @@
                recognizer:(UIPanGestureRecognizer *)recognizer
             withNewCenter:(CGPoint)newCenter 
 {
+    if (!_leftMenuViewController)
+        return;
+
     _leftMenu.frame = CGRectMake(_leftMenu.frame.origin.x + translation.x / MENU_INDENT_DIV, 0, _leftMenu.frame.size.width, _leftMenu.frame.size.height);
 
     recognizer.view.center = newCenter;
@@ -374,6 +377,9 @@
                 recognizer:(UIPanGestureRecognizer *)recognizer
              withNewCenter:(CGPoint)newCenter
 {
+    if (!_rightMenuViewController)
+        return;
+
     _rightMenu.frame = CGRectMake(_rightMenu.frame.origin.x + translation.x / MENU_INDENT_DIV, 0, _rightMenu.frame.size.width, _rightMenu.frame.size.height);
 
     recognizer.view.center = newCenter;

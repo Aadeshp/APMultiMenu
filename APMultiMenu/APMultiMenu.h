@@ -30,7 +30,7 @@ typedef NS_ENUM(NSInteger, APMultiMenuType) {
 @property (nonatomic, assign) CGFloat mainViewShadowRadius;
 @property (nonatomic, assign) CGFloat mainViewShadowOpacity;
 @property (nonatomic, assign) CGSize mainViewShadowOffset;
-@property (nonatomic, assign) UIColor mainViewShadowColor;
+@property (nonatomic, assign) UIColor *mainViewShadowColor;
 
 @property (nonatomic, assign) CGFloat animationDuration;
 

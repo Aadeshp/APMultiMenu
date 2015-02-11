@@ -22,13 +22,14 @@ typedef NS_ENUM(NSInteger, APMultiMenuType) {
     APMultiMenuTypeRightMenu
 };
 
-@interface APMultiMenu : UIViewController <UIGestureRecognizerDelegate, APMultiMenuDelegate>
+@interface APMultiMenu : UIViewController <UIGestureRecognizerDelegate>
 
 @property (nonatomic, weak) id<APMultiMenuDelegate> delegate;
 
 @property (nonatomic, assign) BOOL mainViewShadowEnabled;
 @property (nonatomic, assign) CGFloat mainViewShadowRadius;
 @property (nonatomic, assign) CGFloat mainViewShadowOpacity;
+@property (nonatomic, assign) CGSize mainViewShadowOffset;
 @property (nonatomic, assign) UIColor mainViewShadowColor;
 
 @property (nonatomic, assign) CGFloat animationDuration;

@@ -37,7 +37,7 @@
 - (instancetype)init {
     if (self = [super init])
         [self defaultInit];
-
+    
     return self;
 }
 
@@ -102,7 +102,7 @@
     
     self.mainViewController.view.frame = self.view.bounds;
     [self addViewController:self.mainViewController toView:_mainView];
-
+    
     if (_mainViewShadowEnabled)
         [self setUpShadowOnMainView];
 }
@@ -211,7 +211,7 @@
             _rightMenu.frame = CGRectMake(self.view.frame.size.width - MENU_WIDTH, 0, _rightMenu.frame.size.width, _rightMenu.frame.size.height);
         }];
         _rightMenu.tag = OPEN_TAG;
-
+        
         [self isDelegateRevealMenuCalledForSideMenu:self.rightMenuViewController];
     }
     
@@ -237,7 +237,7 @@
             _leftMenu.frame = CGRectMake(-1 * MENU_INDENT, 0, _leftMenu.frame.size.width, _leftMenu.frame.size.height);
         }];
         _leftMenu.tag = CLOSED_TAG;
-    
+        
         [self isDelegateHideMenuCalledForSideMenu:self.leftMenuViewController];
     } else {
         if (!_rightMenuViewController)
@@ -248,7 +248,7 @@
             _rightMenu.frame = CGRectMake(self.view.frame.size.width - MENU_WIDTH + MENU_INDENT, 0, _rightMenu.frame.size.width, _rightMenu.frame.size.height);
         }];
         _rightMenu.tag = CLOSED_TAG;
-
+        
         [self isDelegateHideMenuCalledForSideMenu:self.rightMenuViewController];
     }
     
@@ -330,29 +330,29 @@
         CGPoint translation = [recognizer translationInView:self.view];
         CGPoint newCenter = CGPointMake(recognizer.view.center.x + translation.x, recognizer.view.center.y);
         
-        _xPos = newCenter.x - (self.view.frame.size.width / 2);
-
+        _xPos = recognizer.view.frame.origin.x + translation.x;
+        NSLog(@"%f", _xPos);
         if (velocity.x > 0) {
-            if (_leftMenu.tag == CLOSED_TAG && (_xPos <= MENU_WIDTH && _xPos >= 0))
+            if (_xPos <= MENU_WIDTH && _xPos >= 0)
                 [self translateLeftMenu:translation recognizer:recognizer withNewCenter:newCenter];
-            else if (_rightMenu.tag == OPEN_TAG || (_xPos >= (-1 * MENU_WIDTH) && _xPos < 0))
+            else if (_xPos >= (-1 * MENU_WIDTH) && _xPos < 0)
                 [self translateRightMenu:translation recognizer:recognizer withNewCenter:newCenter];
-        } else {
-            if (_leftMenu.tag == OPEN_TAG || (_xPos <= MENU_WIDTH && _xPos >= 0))
+        } else if (velocity.x < 0) {
+            if (_xPos <= MENU_WIDTH && _xPos >= 0)
                 [self translateLeftMenu:translation recognizer:recognizer withNewCenter:newCenter];
-            else if (_rightMenu.tag == CLOSED_TAG && (_xPos >= (-1 * MENU_WIDTH) && _xPos < 0))
+            else if (_xPos >= (-1 * MENU_WIDTH) && _xPos < 0)
                 [self translateRightMenu:translation recognizer:recognizer withNewCenter:newCenter];
         }
     }
     
     if (recognizer.state == UIGestureRecognizerStateEnded) {
         if (velocity.x > 0) {
-            if (_xPos > 0)
+            if (recognizer.view.frame.origin.x > 0)
                 [self openMenu:APMultiMenuTypeLeftMenu];
             else
                 [self closeMenu:APMultiMenuTypeRightMenu];
         } else {
-            if (_xPos > 0)
+            if (recognizer.view.frame.origin.x > 0)
                 [self closeMenu:APMultiMenuTypeLeftMenu];
             else
                 [self openMenu:APMultiMenuTypeRightMenu];
@@ -360,15 +360,15 @@
     }
 }
 
-- (void)translateLeftMenu:(CGPoint)translation 
+- (void)translateLeftMenu:(CGPoint)translation
                recognizer:(UIPanGestureRecognizer *)recognizer
-            withNewCenter:(CGPoint)newCenter 
+            withNewCenter:(CGPoint)newCenter
 {
     if (!_leftMenuViewController)
         return;
-
+    
     _leftMenu.frame = CGRectMake(_leftMenu.frame.origin.x + translation.x / MENU_INDENT_DIV, 0, _leftMenu.frame.size.width, _leftMenu.frame.size.height);
-
+    
     recognizer.view.center = newCenter;
     [recognizer setTranslation:CGPointZero inView:self.view];
 }
@@ -379,9 +379,9 @@
 {
     if (!_rightMenuViewController)
         return;
-
+    
     _rightMenu.frame = CGRectMake(_rightMenu.frame.origin.x + translation.x / MENU_INDENT_DIV, 0, _rightMenu.frame.size.width, _rightMenu.frame.size.height);
-
+    
     recognizer.view.center = newCenter;
     [recognizer setTranslation:CGPointZero inView:self.view];
 }

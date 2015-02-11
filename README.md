@@ -22,6 +22,17 @@ UIViewController *rightVC = [sb instantiateViewControllerWithIdentifier:@"RightV
 APMultiMenu *apmm = [[APMultiMenu alloc] initWithMainViewController:nav 
                                                            leftMenu:leftVC 
                                                           rightMenu:rightVC];
+                                                          
+//Add Shadow
+apmm.mainViewShadowEnabled = YES;
+apmm.mainViewShadowColor = [UIColor blackColor]; //Default Value
+apmm.mainViewShadowRadius = 4.0f; //Default Value
+apmm.mainViewShadowOpacity = 0.8f; //Default Value
+apmm.mainViewShadowOffset = CGSizeMake(1, 1); //Default Value
+
+//Changing Animation Duration
+apmm.animationDuration = 0.4f; //Default Value
+
 self.window.rootViewController = apmm;
 [self.window makeKeyAndVisible];
 ```
@@ -34,6 +45,24 @@ To Change Main ViewController From the Slideout Menu:
 
 //Option 2 - UINavgationController
 [self.menuContainerViewController setMainViewController:[[UINavigationController alloc] initWithRootViewController:(UIViewController *)]];
+```
+
+Using Delegate Methods
+
+```objective-c
+...
+    apmm.delegate = self;
+...
+
+//Fired when one of the side menus open up
+- (void)sideMenu:(APMultiMenu *)sideMenu didRevealSideMenu:(UIViewController *)sideMenuViewController {
+    ...
+}
+
+//Fired when one of the side menus close
+- (void)sideMenu:(APMultiMenu *)sideMenu didHideSideMenu:(UIViewController *)sideMenuViewController { 
+    ...
+}
 ```
 
 ## Installation

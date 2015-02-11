@@ -23,7 +23,7 @@ APMultiMenu *apmm = [[APMultiMenu alloc] initWithMainViewController:nav
                                                            leftMenu:leftVC 
                                                           rightMenu:rightVC];
                                                           
-//Add Shadow
+//Add Shadow To Main View
 apmm.mainViewShadowEnabled = YES;
 apmm.mainViewShadowColor = [UIColor blackColor]; //Default Value
 apmm.mainViewShadowRadius = 4.0f; //Default Value
@@ -41,10 +41,10 @@ To Change Main ViewController From the Slideout Menu:
 
 ```objective-c
 //Option 1 - Plain ViewController
-[self.menuContainerViewController setMainViewController:(UIViewController *)]
+[self.sideMenuContainerViewController setMainViewController:(UIViewController *)]
 
 //Option 2 - UINavgationController
-[self.menuContainerViewController setMainViewController:[[UINavigationController alloc] initWithRootViewController:(UIViewController *)]];
+[self.sideMenuContainerViewController setMainViewController:[[UINavigationController alloc] initWithRootViewController:(UIViewController *)]];
 ```
 
 Using Delegate Methods

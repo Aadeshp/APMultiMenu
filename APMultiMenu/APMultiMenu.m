@@ -193,7 +193,7 @@
         if (!_leftMenuViewController)
             return;
         
-        [self.view sendSubviewToBack:_rightMenu.view];
+        [self.view sendSubviewToBack:_rightMenu];
         main_xPos = MENU_WIDTH;
         [blocks addObject:^{
             _leftMenu.frame = CGRectMake(0, 0, _leftMenu.frame.size.width, _leftMenu.frame.size.height);
@@ -312,7 +312,7 @@
 }
 
 - (void)handlePanGesture:(UIPanGestureRecognizer *)recognizer {
-    CGPoint velocity = [sender velocityInView:[sender view]];
+    CGPoint velocity = [recognizer velocityInView:recognizer.view];
     
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         if (velocity.x > 0) {
@@ -327,21 +327,21 @@
     }
     
     if (recognizer.state == UIGestureRecognizerStateChanged) {
-        CGPoint translation = [sender translationInView:self.view];
-        CGPoint newCenter = CGPointMake(sender.view.center.x + translation.x, sender.view.center.y);
+        CGPoint translation = [recognizer translationInView:self.view];
+        CGPoint newCenter = CGPointMake(recognizer.view.center.x + translation.x, recognizer.view.center.y);
         
         _xPos = newCenter.x - (self.view.frame.size.width / 2);
 
         if (velocity.x > 0) {
             if (_leftMenu.tag == CLOSED_TAG && (_xPos <= MENU_WIDTH && _xPos >= 0))
-                [self translateLeftMenu:translation recognizer:sender withNewCenter:newCenter];
+                [self translateLeftMenu:translation recognizer:recognizer withNewCenter:newCenter];
             else if (_rightMenu.tag == OPEN_TAG || (_xPos >= (-1 * MENU_WIDTH) && _xPos < 0))
-                [self translateRightMenu:translation recognizer:sender withNewCenter:newCenter];
+                [self translateRightMenu:translation recognizer:recognizer withNewCenter:newCenter];
         } else {
             if (_leftMenu.tag == OPEN_TAG || (_xPos <= MENU_WIDTH && _xPos >= 0))
-                [self translateLeftMenu:translation recognizer:sender withNewCenter:newCenter];
+                [self translateLeftMenu:translation recognizer:recognizer withNewCenter:newCenter];
             else if (_rightMenu.tag == CLOSED_TAG && (_xPos >= (-1 * MENU_WIDTH) && _xPos < 0))
-                [self translateRightMenu:translation recognizer:sender withNewCenter:newCenter];
+                [self translateRightMenu:translation recognizer:recognizer withNewCenter:newCenter];
         }
     }
     

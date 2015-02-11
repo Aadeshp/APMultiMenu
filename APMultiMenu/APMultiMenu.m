@@ -117,7 +117,7 @@
     nextVC.view.frame = _mainView.bounds;
     [_mainView addSubview:nextVC.view];
     [self toggleLeftMenu];
-    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+    [UIView animateWithDuration:self.animationDuration animations:^{
         nextVC.view.alpha = 1;
     } completion:^(BOOL finished) {
         [self removeViewControllerFromSuperView:self.mainViewController];
@@ -219,7 +219,7 @@
         _mainView.frame = CGRectMake(main_xPos, 0, _mainView.frame.size.width, _mainView.frame.size.height);
     }];
     
-    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+    [UIView animateWithDuration:self.animationDuration animations:^{
         for (void(^block)(void) in blocks)
             block();
     }];
@@ -256,7 +256,7 @@
         _mainView.frame = CGRectMake(0, 0, _mainView.frame.size.width, _mainView.frame.size.height);
     }];
     
-    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+    [UIView animateWithDuration:self.animationDuration animations:^{
         for (void(^block)(void) in blocks)
             block();
     }];
@@ -311,10 +311,10 @@
     return panGesture;
 }
 
-- (void)handlePanGesture:(UIPanGestureRecognizer *)sender {
+- (void)handlePanGesture:(UIPanGestureRecognizer *)recognizer {
     CGPoint velocity = [sender velocityInView:[sender view]];
     
-    if (sender.state == UIGestureRecognizerStateBegan) {
+    if (recognizer.state == UIGestureRecognizerStateBegan) {
         if (velocity.x > 0) {
             if (_rightMenu.tag == CLOSED_TAG)
                 [self.view sendSubviewToBack:_rightMenu];
@@ -326,7 +326,7 @@
         [self.view endEditing:YES];
     }
     
-    if (sender.state == UIGestureRecognizerStateChanged) {
+    if (recognizer.state == UIGestureRecognizerStateChanged) {
         CGPoint translation = [sender translationInView:self.view];
         CGPoint newCenter = CGPointMake(sender.view.center.x + translation.x, sender.view.center.y);
         
@@ -345,7 +345,7 @@
         }
     }
     
-    if (sender.state == UIGestureRecognizerStateEnded) {
+    if (recognizer.state == UIGestureRecognizerStateEnded) {
         if (velocity.x > 0) {
             if (_xPos > 0)
                 [self openMenu:APMultiMenuTypeLeftMenu];
@@ -366,8 +366,8 @@
 {
     _leftMenu.frame = CGRectMake(_leftMenu.frame.origin.x + translation.x / MENU_INDENT_DIV, 0, _leftMenu.frame.size.width, _leftMenu.frame.size.height);
 
-    sender.view.center = newCenter;
-    [sender setTranslation:CGPointZero inView:self.view];
+    recognizer.view.center = newCenter;
+    [recognizer setTranslation:CGPointZero inView:self.view];
 }
 
 - (void)translateRightMenu:(CGPoint)translation
@@ -376,8 +376,8 @@
 {
     _rightMenu.frame = CGRectMake(_rightMenu.frame.origin.x + translation.x / MENU_INDENT_DIV, 0, _rightMenu.frame.size.width, _rightMenu.frame.size.height);
 
-    sender.view.center = newCenter;
-    [sender setTranslation:CGPointZero inView:self.view];
+    recognizer.view.center = newCenter;
+    [recognizer setTranslation:CGPointZero inView:self.view];
 }
 
 @end

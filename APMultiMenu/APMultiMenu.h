@@ -53,4 +53,7 @@ typedef NS_ENUM(NSInteger, APMultiMenuType) {
 //Open/Close Right Side Menu
 - (void)toggleRightMenu;
 
+//Adds Pan Gesture to Main View
+- (void)enablePanGesture;
+
 @end

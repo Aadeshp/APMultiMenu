@@ -298,7 +298,7 @@
 
 #pragma mark - UIGestureRecognizer Pan
 
-- (void)addPanGestureToMenu {
+- (void)enablePanGesture {
     [_mainView addGestureRecognizer:[self panGestureRecognizer]];
 }
 

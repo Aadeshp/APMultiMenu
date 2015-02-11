@@ -12,6 +12,11 @@
 @protocol APMultiMenuDelegate <NSObject>
 
 @optional
+//Occurs BEFORE Side Menu Appears
+- (void)sideMenu:(APMultiMenu *)sideMenu willRevealSideMenu:(UIViewController *)sideMenuViewController;
+- (void)sideMenu:(APMultiMenu *)sideMenu willHideSideMenu:(UIViewController *)sideMenuViewController;
+
+//Occurs AFTER Side Menu Appears
 - (void)sideMenu:(APMultiMenu *)sideMenu didRevealSideMenu:(UIViewController *)sideMenuViewController;
 - (void)sideMenu:(APMultiMenu *)sideMenu didHideSideMenu:(UIViewController *)sideMenuViewController;
 

@@ -18,15 +18,23 @@
 @interface APMultiMenu()
 
 @property (nonatomic, assign, readwrite) CGFloat xPos;
-@property (nonatomic, assign, readwrite) CGFloat translationLimit;
 
 @property (nonatomic, strong) UIViewController *mainViewController;
 @property (nonatomic, strong) UIViewController *leftMenuViewController;
 @property (nonatomic, strong) UIViewController *rightMenuViewController;
 
 @property (nonatomic, strong) UIView *mainView;
+@property (nonatomic, readonly) CGRect mainViewOriginalFrame;
+@property (nonatomic, readonly) CGRect mainViewLeftMenuRevealedFrame;
+@property (nonatomic, readonly) CGRect mainViewRightMenuRevealedFrame;
+
 @property (nonatomic, strong) UIView *leftMenu;
+@property (nonatomic, readonly) CGRect leftMenuOriginalFrame;
+@property (nonatomic, readonly) CGRect leftMenuRevealedFrame;
+
 @property (nonatomic, strong) UIView *rightMenu;
+@property (nonatomic, readonly) CGRect rightMenuOriginalFrame;
+@property (nonatomic, readonly) CGRect rightMenuRevealedFrame;
 
 @end
 
@@ -35,9 +43,10 @@
 #pragma mark - Constructors
 
 - (instancetype)init {
-    if (self = [super init])
+    if (self = [super init]) {
         [self defaultInit];
-
+    }
+    
     return self;
 }
 
@@ -80,6 +89,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [self setUpReadOnlyProperties];
+    
     if (self.leftMenuViewController) {
         _leftMenu = self.leftMenuViewController.view;
         _leftMenu.tag = CLOSED_TAG;
@@ -97,14 +108,26 @@
     self.view.autoresizesSubviews = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
     [self.view addSubview:_mainView];
+    
     _mainView.frame = self.view.bounds;
     _mainView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
     self.mainViewController.view.frame = self.view.bounds;
     [self addViewController:self.mainViewController toView:_mainView];
-
     if (_mainViewShadowEnabled)
         [self setUpShadowOnMainView];
+}
+
+- (void)setUpReadOnlyProperties {
+    _mainViewOriginalFrame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    _mainViewLeftMenuRevealedFrame = CGRectMake(MENU_WIDTH, 0, self.view.frame.size.width, self.view.frame.size.height);
+    _mainViewRightMenuRevealedFrame = CGRectMake(-1 * MENU_WIDTH, 0, self.view.frame.size.width, self.view.frame.size.height);
+    
+    _leftMenuOriginalFrame = CGRectMake(-1 * MENU_INDENT, 0, MENU_WIDTH, self.view.frame.size.height);
+    _leftMenuRevealedFrame = CGRectMake(0, 0, MENU_WIDTH, self.view.frame.size.height);
+    
+    _rightMenuOriginalFrame = CGRectMake(self.view.frame.size.width - MENU_WIDTH + MENU_INDENT, 0, MENU_WIDTH, self.view.frame.size.height);
+    _rightMenuRevealedFrame = CGRectMake(self.view.frame.size.width - MENU_WIDTH, 0, MENU_WIDTH, self.view.frame.size.height);
 }
 
 #pragma mark - Change MainViewController
@@ -160,12 +183,6 @@
     UIView *view = viewController.view;
     view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     view.autoresizesSubviews = YES;
-    
-    if (menuType == APMultiMenuTypeLeftMenu)
-        view.layer.anchorPoint = CGPointMake(0, 0);
-    else
-        view.layer.anchorPoint = CGPointMake(1, 0);
-    
     view.frame = [self getFrameFor:menuType];
     view.clipsToBounds = YES;
     [view sizeThatFits:CGSizeMake(MENU_WIDTH, self.view.frame.size.height)];
@@ -175,100 +192,123 @@
 
 - (CGRect)getFrameFor:(APMultiMenuType)menuType {
     if (menuType == APMultiMenuTypeLeftMenu)
-        return CGRectMake(-1 * MENU_INDENT, 0, MENU_WIDTH, self.view.frame.size.height);
+        return self.leftMenuOriginalFrame;
     else if (menuType == APMultiMenuTypeRightMenu)
-        return CGRectMake(self.view.frame.size.width - MENU_WIDTH + MENU_INDENT, 0, MENU_WIDTH, self.view.frame.size.height);
+        return self.rightMenuOriginalFrame;
     else
         @throw [NSException exceptionWithName:@"NSInvalidArgumentException" reason:@"Invalid Menu Type" userInfo:nil];
 }
 
 #pragma mark - Transitions
 
-- (void)openMenu:(APMultiMenuType)menuType {
-    CGFloat main_xPos;
-    
-    __block NSMutableArray *blocks = [[NSMutableArray alloc] init];
-    
+- (void)openMenu:(APMultiMenuType)menuType
+        animated:(BOOL)animated {
     if (menuType == APMultiMenuTypeLeftMenu) {
         if (!_leftMenuViewController)
             return;
         
+        [self isDelegateWillRevealMenuCalledForSideMenu:self.leftMenuViewController];
+        
         [self.view sendSubviewToBack:_rightMenu];
-        main_xPos = MENU_WIDTH;
-        [blocks addObject:^{
-            _leftMenu.frame = CGRectMake(0, 0, _leftMenu.frame.size.width, _leftMenu.frame.size.height);
-        }];
+        if (animated) {
+            [UIView animateWithDuration:self.animationDuration animations:^{
+                _mainView.frame = self.mainViewLeftMenuRevealedFrame;
+                _leftMenu.frame = self.leftMenuRevealedFrame;
+            }];
+        } else {
+            _mainView.frame = self.mainViewLeftMenuRevealedFrame;
+            _leftMenu.frame = self.leftMenuRevealedFrame;
+        }
+        
         _leftMenu.tag = OPEN_TAG;
         
-        [self isDelegateRevealMenuCalledForSideMenu:self.leftMenuViewController];
+        [self isDelegateDidRevealMenuCalledForSideMenu:self.leftMenuViewController];
     } else {
         if (!_rightMenuViewController)
             return;
         
+        [self isDelegateWillRevealMenuCalledForSideMenu:self.rightMenuViewController];
+        
         [self.view sendSubviewToBack:_leftMenu];
-        main_xPos = -1 * MENU_WIDTH;
-        [blocks addObject:^{
-            _rightMenu.frame = CGRectMake(self.view.frame.size.width - MENU_WIDTH, 0, _rightMenu.frame.size.width, _rightMenu.frame.size.height);
-        }];
+        if (animated) {
+            [UIView animateWithDuration:self.animationDuration animations:^{
+                _mainView.frame = self.mainViewRightMenuRevealedFrame;
+                _rightMenu.frame = self.rightMenuRevealedFrame;
+            }];
+        } else {
+            _mainView.frame = self.mainViewRightMenuRevealedFrame;
+            _rightMenu.frame = self.rightMenuRevealedFrame;
+        }
         _rightMenu.tag = OPEN_TAG;
-
-        [self isDelegateRevealMenuCalledForSideMenu:self.rightMenuViewController];
+        
+        [self isDelegateDidRevealMenuCalledForSideMenu:self.rightMenuViewController];
     }
-    
-    [blocks addObject:^{
-        _mainView.frame = CGRectMake(main_xPos, 0, _mainView.frame.size.width, _mainView.frame.size.height);
-    }];
-    
-    [UIView animateWithDuration:self.animationDuration animations:^{
-        for (void(^block)(void) in blocks)
-            block();
-    }];
 }
 
-- (void)closeMenu:(APMultiMenuType)menuType {
-    __block NSMutableArray *blocks = [[NSMutableArray alloc] init];
-    
+- (void)closeMenu:(APMultiMenuType)menuType
+         animated:(BOOL)animated {
     if (menuType == APMultiMenuTypeLeftMenu) {
         if (!_leftMenuViewController)
             return;
         
+        [self isDelegateWillHideMenuCalledForSideMenu:self.leftMenuViewController];
+        
         [self.view sendSubviewToBack:_rightMenu];
-        [blocks addObject:^{
-            _leftMenu.frame = CGRectMake(-1 * MENU_INDENT, 0, _leftMenu.frame.size.width, _leftMenu.frame.size.height);
-        }];
+        if (animated) {
+            [UIView animateWithDuration:self.animationDuration animations:^{
+                _mainView.frame = self.mainViewOriginalFrame;
+                _leftMenu.frame = self.leftMenuOriginalFrame;
+            }];
+        } else {
+            _mainView.frame = self.mainViewOriginalFrame;
+            _leftMenu.frame = self.leftMenuOriginalFrame;
+        }
         _leftMenu.tag = CLOSED_TAG;
-    
-        [self isDelegateHideMenuCalledForSideMenu:self.leftMenuViewController];
+        
+        [self isDelegateDidHideMenuCalledForSideMenu:self.leftMenuViewController];
     } else {
         if (!_rightMenuViewController)
             return;
         
+        [self isDelegateWillHideMenuCalledForSideMenu:self.rightMenuViewController];
+        
         [self.view sendSubviewToBack:_leftMenu];
-        [blocks addObject:^{
-            _rightMenu.frame = CGRectMake(self.view.frame.size.width - MENU_WIDTH + MENU_INDENT, 0, _rightMenu.frame.size.width, _rightMenu.frame.size.height);
-        }];
+        if (animated) {
+            [UIView animateWithDuration:self.animationDuration animations:^{
+                _mainView.frame = self.mainViewOriginalFrame;
+                _rightMenu.frame = self.rightMenuOriginalFrame;
+            }];
+        } else {
+            _mainView.frame = self.mainViewOriginalFrame;
+            _leftMenu.frame = self.leftMenuOriginalFrame;
+        }
         _rightMenu.tag = CLOSED_TAG;
-
-        [self isDelegateHideMenuCalledForSideMenu:self.rightMenuViewController];
+        
+        [self isDelegateDidHideMenuCalledForSideMenu:self.rightMenuViewController];
     }
-    
-    [blocks addObject:^{
-        _mainView.frame = CGRectMake(0, 0, _mainView.frame.size.width, _mainView.frame.size.height);
-    }];
-    
-    [UIView animateWithDuration:self.animationDuration animations:^{
-        for (void(^block)(void) in blocks)
-            block();
-    }];
 }
 
-- (void)isDelegateRevealMenuCalledForSideMenu:(UIViewController *)sideMenuViewController {
-    if ([self.delegate conformsToProtocol:@protocol(APMultiMenuDelegate)] && [self.delegate respondsToSelector:@selector(sideMenu:didRevealSideMenu:)])
+- (BOOL)isConformToProtocol {
+    return [self.delegate conformsToProtocol:@protocol(APMultiMenuDelegate)];
+}
+
+- (void)isDelegateWillRevealMenuCalledForSideMenu:(UIViewController *)sideMenuViewController {
+    if ([self isConformToProtocol] && [self.delegate respondsToSelector:@selector(sideMenu:willRevealSideMenu:)])
+        [self.delegate sideMenu:self willRevealSideMenu:sideMenuViewController];
+}
+
+- (void)isDelegateWillHideMenuCalledForSideMenu:(UIViewController *)sideMenuViewController {
+    if ([self isConformToProtocol] && [self.delegate respondsToSelector:@selector(sideMenu:willHideSideMenu:)])
+        [self.delegate sideMenu:self willHideSideMenu:sideMenuViewController];
+}
+
+- (void)isDelegateDidRevealMenuCalledForSideMenu:(UIViewController *)sideMenuViewController {
+    if ([self isConformToProtocol] && [self.delegate respondsToSelector:@selector(sideMenu:didRevealSideMenu:)])
         [self.delegate sideMenu:self didRevealSideMenu:sideMenuViewController];
 }
 
-- (void)isDelegateHideMenuCalledForSideMenu:(UIViewController *)sideMenuViewController {
-    if ([self.delegate conformsToProtocol:@protocol(APMultiMenuDelegate)] && [self.delegate respondsToSelector:@selector(sideMenu:didHideSideMenu:)])
+- (void)isDelegateDidHideMenuCalledForSideMenu:(UIViewController *)sideMenuViewController {
+    if ([self isConformToProtocol] && [self.delegate respondsToSelector:@selector(sideMenu:didHideSideMenu:)])
         [self.delegate sideMenu:self didHideSideMenu:sideMenuViewController];
 }
 
@@ -277,10 +317,10 @@
 - (void)toggleLeftMenu {
     switch (_leftMenu.tag) {
         case CLOSED_TAG:
-            [self openMenu:APMultiMenuTypeLeftMenu];
+            [self openMenu:APMultiMenuTypeLeftMenu animated:YES];
             break;
         case OPEN_TAG:
-            [self closeMenu:APMultiMenuTypeLeftMenu];
+            [self closeMenu:APMultiMenuTypeLeftMenu animated:YES];
             break;
     }
 }
@@ -288,10 +328,10 @@
 - (void)toggleRightMenu {
     switch (_rightMenu.tag) {
         case CLOSED_TAG:
-            [self openMenu:APMultiMenuTypeRightMenu];
+            [self openMenu:APMultiMenuTypeRightMenu animated:YES];
             break;
         case OPEN_TAG:
-            [self closeMenu:APMultiMenuTypeRightMenu];
+            [self closeMenu:APMultiMenuTypeRightMenu animated:YES];
             break;
     }
 }
@@ -330,45 +370,49 @@
         CGPoint translation = [recognizer translationInView:self.view];
         CGPoint newCenter = CGPointMake(recognizer.view.center.x + translation.x, recognizer.view.center.y);
         
-        _xPos = newCenter.x - (self.view.frame.size.width / 2);
-
+        _xPos = recognizer.view.frame.origin.x + translation.x;
+        
         if (velocity.x > 0) {
-            if (_leftMenu.tag == CLOSED_TAG && (_xPos <= MENU_WIDTH && _xPos >= 0))
+            if (_xPos <= MENU_WIDTH && _xPos >= 0)
                 [self translateLeftMenu:translation recognizer:recognizer withNewCenter:newCenter];
-            else if (_rightMenu.tag == OPEN_TAG || (_xPos >= (-1 * MENU_WIDTH) && _xPos < 0))
+            else if (_xPos >= (-1 * MENU_WIDTH) && _xPos < 0)
                 [self translateRightMenu:translation recognizer:recognizer withNewCenter:newCenter];
-        } else {
-            if (_leftMenu.tag == OPEN_TAG || (_xPos <= MENU_WIDTH && _xPos >= 0))
+        } else if (velocity.x < 0) {
+            if (_xPos <= MENU_WIDTH && _xPos >= 0)
                 [self translateLeftMenu:translation recognizer:recognizer withNewCenter:newCenter];
-            else if (_rightMenu.tag == CLOSED_TAG && (_xPos >= (-1 * MENU_WIDTH) && _xPos < 0))
+            else if (_xPos >= (-1 * MENU_WIDTH) && _xPos < 0)
                 [self translateRightMenu:translation recognizer:recognizer withNewCenter:newCenter];
         }
     }
     
     if (recognizer.state == UIGestureRecognizerStateEnded) {
         if (velocity.x > 0) {
-            if (_xPos > 0)
-                [self openMenu:APMultiMenuTypeLeftMenu];
+            if (recognizer.view.frame.origin.x > 0)
+                [self openMenu:APMultiMenuTypeLeftMenu animated:YES];
             else
-                [self closeMenu:APMultiMenuTypeRightMenu];
+                [self closeMenu:APMultiMenuTypeRightMenu animated:YES];
         } else {
-            if (_xPos > 0)
-                [self closeMenu:APMultiMenuTypeLeftMenu];
+            if (recognizer.view.frame.origin.x > 0)
+                [self closeMenu:APMultiMenuTypeLeftMenu animated:YES];
             else
-                [self openMenu:APMultiMenuTypeRightMenu];
+                [self openMenu:APMultiMenuTypeRightMenu animated:YES];
         }
     }
 }
 
-- (void)translateLeftMenu:(CGPoint)translation 
+- (void)translateLeftMenu:(CGPoint)translation
                recognizer:(UIPanGestureRecognizer *)recognizer
-            withNewCenter:(CGPoint)newCenter 
+            withNewCenter:(CGPoint)newCenter
 {
     if (!_leftMenuViewController)
         return;
-
-    _leftMenu.frame = CGRectMake(_leftMenu.frame.origin.x + translation.x / MENU_INDENT_DIV, 0, _leftMenu.frame.size.width, _leftMenu.frame.size.height);
-
+    
+    [self.view sendSubviewToBack:_rightMenu];
+    if (_rightMenu.frame.origin.x != self.rightMenuOriginalFrame.origin.x)
+        _rightMenu.frame = self.rightMenuOriginalFrame;
+    
+    _leftMenu.center = CGPointMake(_leftMenu.center.x + translation.x / MENU_INDENT_DIV, _leftMenu.center.y);
+    
     recognizer.view.center = newCenter;
     [recognizer setTranslation:CGPointZero inView:self.view];
 }
@@ -379,9 +423,13 @@
 {
     if (!_rightMenuViewController)
         return;
-
-    _rightMenu.frame = CGRectMake(_rightMenu.frame.origin.x + translation.x / MENU_INDENT_DIV, 0, _rightMenu.frame.size.width, _rightMenu.frame.size.height);
-
+    
+    [self.view sendSubviewToBack:_leftMenu];
+    if (_leftMenu.frame.origin.x != self.leftMenuOriginalFrame.origin.x)
+        _leftMenu.frame = self.leftMenuOriginalFrame;
+    
+    _rightMenu.center = CGPointMake(_rightMenu.center.x + translation.x / MENU_INDENT_DIV, _rightMenu.center.y);
+    
     recognizer.view.center = newCenter;
     [recognizer setTranslation:CGPointZero inView:self.view];
 }

@@ -63,6 +63,7 @@ Using Delegate Methods
 - (void)sideMenu:(APMultiMenu *)sideMenu willHideSideMenu:(UIViewController *)sideMenuViewController {
     ...
 }
+
 //Fired AFTER one of the side menus open up
 - (void)sideMenu:(APMultiMenu *)sideMenu didRevealSideMenu:(UIViewController *)sideMenuViewController {
     ...

@@ -30,10 +30,9 @@
 #define MENU_INDENT (260/5)
 #define MENU_INDENT_DIV 5
 
-#define CLOSED_TAG 0
-#define OPEN_TAG 1
-
 @interface APMultiMenu()
+
+@property (nonatomic) CALayer *shadowLayer;
 
 @property (nonatomic, assign, readwrite) CGFloat xPos;
 @property (nonatomic) UIPanGestureRecognizer *panGesture;
@@ -53,7 +52,6 @@
 - (void)setUpViewController:(APMultiMenuViewController)viewController;
 - (void)resizeView:(UIViewController *)viewController
           menuType:(APMultiMenuType)menuType;
-- (void)setUpShadowOnMainView;
 - (void)addViewController:(UIViewController *)viewController
                    toView:(UIView *)view;
 - (void)removeViewControllerFromSuperView:(UIViewController *)viewController;
@@ -150,6 +148,7 @@
     if (self = [self init]) {
         NSParameterAssert(mainViewController);
         
+        _panGestureEnabled = NO;
         _mainViewController = mainViewController;
         _leftMenuViewController = leftMenuViewController;
         _rightMenuViewController = rightMenuViewController;
@@ -163,7 +162,7 @@
     
     self.animationDuration = 0.4f;
     
-    self.mainViewShadowEnabled = NO;
+    // self.mainViewShadowEnabled = NO;
     self.mainViewShadowRadius = 4.0f;
     self.mainViewShadowOpacity = 0.8f;
     self.mainViewShadowColor = [UIColor blackColor];
@@ -190,12 +189,11 @@
         [self addViewController:self.mainViewController toView:_mainView];
         
         if (_mainViewShadowEnabled)
-            [self setUpShadowOnMainView];
+            [self addShadowToMainView];
     } else if (viewController == APMultiMenuViewControllerLeft) {
         if (self.leftMenuViewController) {
             _leftMenu = self.leftMenuViewController.view;
             _leftMenuStatus = APMultiMenuStatusClose;
-            _leftMenu.tag = CLOSED_TAG;
             [self addViewController:self.leftMenuViewController toView:self.view];
             [self resizeView:self.leftMenuViewController menuType:APMultiMenuTypeLeftMenu];
         }
@@ -203,7 +201,6 @@
         if (self.rightMenuViewController) {
             _rightMenu = self.rightMenuViewController.view;
             _rightMenuStatus = APMultiMenuStatusClose;
-            _rightMenu.tag = CLOSED_TAG;
             [self addViewController:self.rightMenuViewController toView:self.view];
             [self resizeView:self.rightMenuViewController menuType:APMultiMenuTypeRightMenu];
         }
@@ -212,13 +209,32 @@
 
 #pragma mark - Shadow On Main View
 
-- (void)setUpShadowOnMainView {
-    CALayer *layer = _mainView.layer;
-    layer.shadowOffset = self.mainViewShadowOffset;
-    layer.shadowColor = [self.mainViewShadowColor CGColor];
-    layer.shadowRadius = self.mainViewShadowRadius;
-    layer.shadowOpacity = self.mainViewShadowOpacity;
-    layer.shadowPath = [[UIBezierPath bezierPathWithRect:layer.bounds] CGPath];
+- (void)setMainViewShadowEnabled:(BOOL)mainViewShadowEnabled {
+    if (_mainViewShadowEnabled == mainViewShadowEnabled)
+        return;
+    
+    _mainViewShadowEnabled = mainViewShadowEnabled;
+    
+    if (mainViewShadowEnabled)
+        [self addShadowToMainView];
+    else
+        [self removeShadowFromMainView];
+}
+
+- (void)addShadowToMainView {
+    _shadowLayer = _mainView.layer;
+    _shadowLayer.shadowOffset = self.mainViewShadowOffset;
+    _shadowLayer.shadowColor = [self.mainViewShadowColor CGColor];
+    _shadowLayer.shadowRadius = self.mainViewShadowRadius;
+    _shadowLayer.shadowOpacity = self.mainViewShadowOpacity;
+    _shadowLayer.shadowPath = [[UIBezierPath bezierPathWithRect:_shadowLayer.bounds] CGPath];
+}
+
+- (void)removeShadowFromMainView {
+    _mainView.layer.shadowOpacity = 0.0f;
+    _mainView.layer.shadowRadius = 0.0f;
+    _mainView.layer.shadowOffset = CGSizeZero;
+    _mainView.layer.shadowPath = nil;
 }
 
 #pragma mark - Add/Remove ViewControllers
@@ -473,6 +489,7 @@
         return;
     
     [self.view endEditing:YES];
+    
     [self fireDelegateMethodThatRespondsTo:transition fireBefore:YES];
     [self setMenuStatusForTransition:transition];
     
@@ -513,6 +530,18 @@
 }
 
 #pragma mark - UIGestureRecognizer Pan
+
+- (void)setPanGestureEnabled:(BOOL)panGestureEnabled {
+    if (_panGestureEnabled == panGestureEnabled)
+        return;
+    
+    _panGestureEnabled = panGestureEnabled;
+    
+    if (panGestureEnabled)
+        [self enablePanGesture];
+    else
+        [self removePanGesture];
+}
 
 - (void)enablePanGesture {
     if (!_panGesture)

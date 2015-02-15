@@ -61,6 +61,9 @@
 //Animation Variable
 @property (nonatomic, assign) CGFloat animationDuration;
 
+//PanGesture Variable
+@property (nonatomic, assign) BOOL panGestureEnabled;
+
 //Initializations
 - (instancetype)init;
 - (instancetype)initWithMainViewController:(UIViewController *)mainViewController

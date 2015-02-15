@@ -7,12 +7,29 @@
 //
 
 #import "APMultiMenuAppDelegate.h"
+#import <APMultiMenu.h>
 
 @implementation APMultiMenuAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
+    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main_iPhone" bundle:nil];
+    UIViewController *mainVC = [sb instantiateViewControllerWithIdentifier:@"MainVC"];
+    UIViewController *leftVC = [sb instantiateViewControllerWithIdentifier:@"LeftMenu"];
+    UIViewController *rightVC = [sb instantiateViewControllerWithIdentifier:@"RightMenu"];
+    
+    APMultiMenu *apmm = [[APMultiMenu alloc] initWithMainViewController:mainVC
+                                                               leftMenu:leftVC
+                                                              rightMenu:rightVC];
+    
+    apmm.mainViewShadowColor = [UIColor blackColor];
+    apmm.mainViewShadowRadius = 6.0f;
+    apmm.mainViewShadowEnabled = YES;
+    
+    apmm.panGestureEnabled = YES;
+    self.window.rootViewController = apmm;
+    [self.window makeKeyAndVisible];
+    
     return YES;
 }
 							

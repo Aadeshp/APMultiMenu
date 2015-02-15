@@ -6,6 +6,4 @@ end
 
 target 'Tests', :exclusive => true do
   pod "APMultiMenu", :path => "../"
-
-  pod 'FBSnapshotTestCase'
 end

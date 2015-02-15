@@ -9,12 +9,6 @@
 // APMultiMenu
 #define COCOAPODS_POD_AVAILABLE_APMultiMenu
 #define COCOAPODS_VERSION_MAJOR_APMultiMenu 0
-#define COCOAPODS_VERSION_MINOR_APMultiMenu 1
-#define COCOAPODS_VERSION_PATCH_APMultiMenu 0
-
-// FBSnapshotTestCase
-#define COCOAPODS_POD_AVAILABLE_FBSnapshotTestCase
-#define COCOAPODS_VERSION_MAJOR_FBSnapshotTestCase 1
-#define COCOAPODS_VERSION_MINOR_FBSnapshotTestCase 5
-#define COCOAPODS_VERSION_PATCH_FBSnapshotTestCase 0
+#define COCOAPODS_VERSION_MINOR_APMultiMenu 6
+#define COCOAPODS_VERSION_PATCH_APMultiMenu 6
 

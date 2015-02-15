@@ -603,9 +603,9 @@
     
     if (recognizer.state == UIGestureRecognizerStateEnded) {
         if (recognizer.view.frame.origin.x > 0)
-            [self toggleMenu:APMultiMenuTypeLeftMenu animated:YES];
+            [self toggleLeftMenuWithAnimation:YES];
         else if (recognizer.view.frame.origin.x < 0)
-            [self toggleMenu:APMultiMenuTypeRightMenu animated:YES];
+            [self toggleRightMenuWithAnimation:YES];
     }
 }
 

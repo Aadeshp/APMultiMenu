@@ -84,10 +84,10 @@
 //Delegate Helper Methods
 - (void)fireDelegateMethodThatRespondsTo:(APMultiMenuTransition)transition
                               fireBefore:(BOOL)isFireBefore;
-- (void)fireWillRevealMenuDelegateForTransition:(UIViewController *)sideMenuViewController;
-- (void)fireDidRevealMenuDelegateForTransition:(UIViewController *)sideMenuViewController;
-- (void)fireWillHideMenuDelegateForTransition:(UIViewController *)sideMenuViewController;
-- (void)fireDidHideMenuDelegateForTransition:(UIViewController *)sideMenuViewController;
+- (void)fireWillRevealMenuDelegateForViewController:(UIViewController *)sideMenuViewController;
+- (void)fireDidRevealMenuDelegateForViewController:(UIViewController *)sideMenuViewController;
+- (void)fireWillHideMenuDelegateForViewController:(UIViewController *)sideMenuViewController;
+- (void)fireDidHideMenuDelegateForViewController:(UIViewController *)sideMenuViewController;
 - (BOOL)isConformToProtocol;
 
 //General Toggle Menu
@@ -444,33 +444,33 @@
                               fireBefore:(BOOL)isFireBefore {
     if (isFireBefore) {
         if (transition == APMultiMenuTransitionToLeft || transition == APMultiMenuTransitionToRight)
-            [self fireWillRevealMenuDelegateForTransition:[self getMenuViewControllerForTransition:transition]];
+            [self fireWillRevealMenuDelegateForViewController:[self getMenuViewControllerForTransition:transition]];
         else if (transition == APMultiMenuTransitionResetFromLeft || transition == APMultiMenuTransitionResetFromRight)
-            [self fireWillHideMenuDelegateForTransition:[self getMenuViewControllerForTransition:transition]];
+            [self fireWillHideMenuDelegateForViewController:[self getMenuViewControllerForTransition:transition]];
     } else {
         if (transition == APMultiMenuTransitionToLeft || transition == APMultiMenuTransitionToRight)
-            [self fireDidRevealMenuDelegateForTransition:[self getMenuViewControllerForTransition:transition]];
+            [self fireDidRevealMenuDelegateForViewController:[self getMenuViewControllerForTransition:transition]];
         else if (transition == APMultiMenuTransitionResetFromLeft || transition == APMultiMenuTransitionResetFromRight)
-            [self fireDidHideMenuDelegateForTransition:[self getMenuViewControllerForTransition:transition]];
+            [self fireDidHideMenuDelegateForViewController:[self getMenuViewControllerForTransition:transition]];
     }
 }
 
-- (void)fireWillRevealMenuDelegateForTransition:(UIViewController *)sideMenuViewController  {
+- (void)fireWillRevealMenuDelegateForViewController:(UIViewController *)sideMenuViewController  {
     if ([self isConformToProtocol] && [self.delegate respondsToSelector:@selector(sideMenu:willRevealSideMenu:)])
         [self.delegate sideMenu:self willRevealSideMenu:sideMenuViewController];
 }
 
-- (void)fireDidRevealMenuDelegateForTransition:(UIViewController *)sideMenuViewController {
+- (void)fireDidRevealMenuDelegateForViewController:(UIViewController *)sideMenuViewController {
     if ([self isConformToProtocol] && [self.delegate respondsToSelector:@selector(sideMenu:didRevealSideMenu:)])
         [self.delegate sideMenu:self didRevealSideMenu:sideMenuViewController];
 }
 
-- (void)fireWillHideMenuDelegateForTransition:(UIViewController *)sideMenuViewController {
+- (void)fireWillHideMenuDelegateForViewController:(UIViewController *)sideMenuViewController {
     if ([self isConformToProtocol] && [self.delegate respondsToSelector:@selector(sideMenu:willHideSideMenu:)])
         [self.delegate sideMenu:self willHideSideMenu:sideMenuViewController];
 }
 
-- (void)fireDidHideMenuDelegateForTransition:(UIViewController *)sideMenuViewController {
+- (void)fireDidHideMenuDelegateForViewController:(UIViewController *)sideMenuViewController {
     if ([self isConformToProtocol] && [self.delegate respondsToSelector:@selector(sideMenu:didHideSideMenu:)])
         [self.delegate sideMenu:self didHideSideMenu:sideMenuViewController];
 }

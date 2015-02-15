@@ -602,9 +602,9 @@
     }
     
     if (recognizer.state == UIGestureRecognizerStateEnded) {
-        if (recognizer.view.frame.origin.x > 0)
+        if (recognizer.view.frame.origin.x > 0 && recognizer.view.frame.origin.x < MENU_WIDTH)
             [self toggleLeftMenuWithAnimation:YES];
-        else if (recognizer.view.frame.origin.x < 0)
+        else if (recognizer.view.frame.origin.x < 0 && recognizer.view.frame.origin.x > -1 * MENU_WIDTH)
             [self toggleRightMenuWithAnimation:YES];
     }
 }

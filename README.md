@@ -58,9 +58,6 @@ Using Delegate Methods
     apmm.delegate = self;
 ...
 
-<<<<<<< HEAD
-//Fired AFTER one of the side menus open
-=======
 //Fired BEFORE one of the side menus open up
 - (void)sideMenu:(APMultiMenu *)sideMenu willRevealSideMenu:(UIViewController *)sideMenuViewController {
     ...
@@ -72,23 +69,12 @@ Using Delegate Methods
 }
 
 //Fired AFTER one of the side menus open up
->>>>>>> cb3d7f2dda837e03823f04ecd326e6e140900829
 - (void)sideMenu:(APMultiMenu *)sideMenu didRevealSideMenu:(UIViewController *)sideMenuViewController {
     ...
 }
 
 //Fired AFTER one of the side menus close
 - (void)sideMenu:(APMultiMenu *)sideMenu didHideSideMenu:(UIViewController *)sideMenuViewController { 
-    ...
-}
-
-//Fired BEFORE one of the side menus open
-- (void)sideMenu:(APMultiMenu *)sideMenu willRevealSideMenu:(UIViewController *)sideMenuViewController { 
-    ...
-}
-
-//Fired BEFORE one of the side menus close
-- (void)sideMenu:(APMultiMenu *)sideMenu willHideSideMenu:(UIViewController *)sideMenuViewController { 
     ...
 }
 ```

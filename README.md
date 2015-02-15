@@ -14,27 +14,31 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 In AppDelegate.m:
 
 ```objective-c
-UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-UINavigationController *nav = [sb instantiateViewControllerWithIdentifier:@"Nav"];
-UIViewController *leftVC = [sb instantiateViewControllerWithIdentifier:@"LeftVC"];
-UIViewController *rightVC = [sb instantiateViewControllerWithIdentifier:@"RightVC"];
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    UINavigationController *nav = [sb instantiateViewControllerWithIdentifier:@"Nav"];
+    UIViewController *leftVC = [sb instantiateViewControllerWithIdentifier:@"LeftVC"];
+    UIViewController *rightVC = [sb instantiateViewControllerWithIdentifier:@"RightVC"];
     
-APMultiMenu *apmm = [[APMultiMenu alloc] initWithMainViewController:nav 
-                                                           leftMenu:leftVC 
-                                                          rightMenu:rightVC];
+    APMultiMenu *apmm = [[APMultiMenu alloc] initWithMainViewController:nav 
+                                                               leftMenu:leftVC 
+                                                              rightMenu:rightVC];
                                                           
-//Add Shadow To Main View
-apmm.mainViewShadowEnabled = YES;
-apmm.mainViewShadowColor = [UIColor blackColor]; //Default Value
-apmm.mainViewShadowRadius = 4.0f; //Default Value
-apmm.mainViewShadowOpacity = 0.8f; //Default Value
-apmm.mainViewShadowOffset = CGSizeMake(1, 1); //Default Value
+    //Add Shadow To Main View
+    apmm.mainViewShadowEnabled = YES;
+    apmm.mainViewShadowColor = [UIColor blackColor]; //Default Value
+    apmm.mainViewShadowRadius = 4.0f; //Default Value
+    apmm.mainViewShadowOpacity = 0.8f; //Default Value
+    apmm.mainViewShadowOffset = CGSizeMake(1, 1); //Default Value
 
-//Changing Animation Duration
-apmm.animationDuration = 0.4f; //Default Value
+    //Changing Animation Duration
+    apmm.animationDuration = 0.4f; //Default Value
 
-self.window.rootViewController = apmm;
-[self.window makeKeyAndVisible];
+    self.window.rootViewController = apmm;
+    [self.window makeKeyAndVisible];
+    
+    return YES;
+}
 ```
 
 To Change Main ViewController From the Slideout Menu:
@@ -54,16 +58,37 @@ Using Delegate Methods
     apmm.delegate = self;
 ...
 
-//Fired when one of the side menus open up
+//Fired AFTER one of the side menus open
 - (void)sideMenu:(APMultiMenu *)sideMenu didRevealSideMenu:(UIViewController *)sideMenuViewController {
     ...
 }
 
-//Fired when one of the side menus close
+//Fired AFTER one of the side menus close
 - (void)sideMenu:(APMultiMenu *)sideMenu didHideSideMenu:(UIViewController *)sideMenuViewController { 
     ...
 }
+
+//Fired BEFORE one of the side menus open
+- (void)sideMenu:(APMultiMenu *)sideMenu willRevealSideMenu:(UIViewController *)sideMenuViewController { 
+    ...
+}
+
+//Fired BEFORE one of the side menus close
+- (void)sideMenu:(APMultiMenu *)sideMenu willHideSideMenu:(UIViewController *)sideMenuViewController { 
+    ...
+}
 ```
+
+## Customization
+
+The following properties are customizable:
+- mainViewShadowEnabled
+- mainViewShadowRadius
+- mainViewShadowOpacity
+- mainViewShadowOffset
+- mainViewShadowColor
+- animationDuration
+- panGestureEnabled
 
 ## Installation
 

@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "APMultiMenu"
-  s.version          = "0.6.1"
+  s.version          = "0.6.2"
   s.summary          = "APMultiMenu is a viewcontroller container for left and right slideout menus"
   s.description      = <<-DESC
                        APMultiMenu is a ViewController Container that currently supports left and right slide out menus

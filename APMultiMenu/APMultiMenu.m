@@ -417,16 +417,17 @@
 #pragma mark - Set Current Menu Status
 
 - (void)setMenuStatusForTransition:(APMultiMenuTransition)transition {
-    if (transition == APMultiMenuTransitionToLeft)
+    if (transition == APMultiMenuTransitionToLeft) {
         _rightMenuStatus = APMultiMenuStatusOpen;
-    else if (transition == APMultiMenuTransitionResetFromLeft)
+        _leftMenuStatus = APMultiMenuStatusClose;
+    } else if (transition == APMultiMenuTransitionResetFromLeft)
         _rightMenuStatus = APMultiMenuStatusClose;
-    else if (transition == APMultiMenuTransitionToRight)
+    else if (transition == APMultiMenuTransitionToRight) {
         _leftMenuStatus = APMultiMenuStatusOpen;
-    else if (transition == APMultiMenuTransitionResetFromRight)
+        _rightMenuStatus = APMultiMenuStatusClose;
+    } else if (transition == APMultiMenuTransitionResetFromRight)
         _leftMenuStatus = APMultiMenuStatusClose;
 }
-
 
 #pragma mark - Does Menu Type Exist
 

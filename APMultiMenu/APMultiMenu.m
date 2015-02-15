@@ -148,6 +148,7 @@
     if (self = [self init]) {
         NSParameterAssert(mainViewController);
         
+        _mainViewShadowEnabled = NO;
         _panGestureEnabled = NO;
         _mainViewController = mainViewController;
         _leftMenuViewController = leftMenuViewController;

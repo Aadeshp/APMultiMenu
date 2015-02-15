@@ -60,9 +60,11 @@
 
 //Animation Variable
 @property (nonatomic, assign) CGFloat animationDuration;
+@property (nonatomic, assign) BOOL menuIndentationEnabled;
 
 //PanGesture Variable
 @property (nonatomic, assign) BOOL panGestureEnabled;
+@property (nonatomic, assign) BOOL swipeGestureEnabled;
 
 //Initializations
 - (instancetype)init;
@@ -87,6 +89,10 @@
 - (void)beginTransitionWith:(APMultiMenuTransition)transition
                    animated:(BOOL)animated
                  completion:(void(^)(BOOL))completion;
+
+//Adds Swipe Gesture to Main View
+- (void)enableSwipeGesture;
+- (void)removeSwipeGesture;
 
 //Adds Pan Gesture to Main View
 - (void)enablePanGesture;

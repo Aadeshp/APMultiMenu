@@ -26,12 +26,17 @@
 #ifndef APMultiMenu_APMultiMenuConstants_h
 #define APMultiMenu_APMultiMenuConstants_h
 
+static CGFloat const kMENU_WIDTH = 260.0f;
+static CGFloat const kMENU_INDENT_DIV = 5.0f;
+static CGFloat const kMENU_INDENT = kMENU_WIDTH / kMENU_INDENT_DIV;
+
 typedef NS_ENUM (NSInteger, APMultiMenuType) {
     APMultiMenuTypeLeftMenu,
     APMultiMenuTypeRightMenu
 };
 
 typedef NS_ENUM (NSInteger, APMultiMenuTransition) {
+    APMultiMenuTransitionNone,
     APMultiMenuTransitionToLeft,
     APMultiMenuTransitionResetFromLeft,
     APMultiMenuTransitionToRight,

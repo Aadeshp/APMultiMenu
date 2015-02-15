@@ -9,8 +9,8 @@
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
-![Sample Image](https://cloud.githubusercontent.com/assets/8670066/6205063/26d5ba6a-b52f-11e4-80dc-3934f5922c88.png)
-
+![Left Menu Image](https://cloud.githubusercontent.com/assets/8670066/6205063/26d5ba6a-b52f-11e4-80dc-3934f5922c88.png)
+![Right Menu Image](https://cloud.githubusercontent.com/assets/8670066/6205179/cd445d12-b533-11e4-90a2-8c75a01a0117.png)
 ## How To Use
 
 In AppDelegate.m:

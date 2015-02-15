@@ -1,15 +1,6 @@
-#
-# Be sure to run `pod lib lint APMultiMenu.podspec' to ensure this is a
-# valid spec and remove all comments before submitting the spec.
-#
-# Any lines starting with a # are optional, but encouraged
-#
-# To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html
-#
-
 Pod::Spec.new do |s|
   s.name             = "APMultiMenu"
-  s.version          = "0.6.0"
+  s.version          = "0.6.1"
   s.summary          = "APMultiMenu is a viewcontroller container for left and right slideout menus"
   s.description      = <<-DESC
                        APMultiMenu is a ViewController Container that currently supports left and right slide out menus

@@ -58,9 +58,9 @@
 @property (nonatomic, assign) CGSize mainViewShadowOffset;
 @property (nonatomic, assign) UIColor *mainViewShadowColor;
 
-//Animation Variable
-@property (nonatomic, assign) CGFloat animationDuration;
+//Animation Variables
 @property (nonatomic, assign) BOOL menuIndentationEnabled;
+@property (nonatomic, assign) CGFloat animationDuration;
 
 //PanGesture Variable
 @property (nonatomic, assign) BOOL panGestureEnabled;

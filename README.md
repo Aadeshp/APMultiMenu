@@ -88,6 +88,8 @@ The following properties are customizable:
 - mainViewShadowOffset
 - mainViewShadowColor
 - animationDuration
+- menuIndentationEnabled
+- swipeGestureEnabled
 - panGestureEnabled
 
 ## Installation

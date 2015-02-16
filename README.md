@@ -95,6 +95,7 @@ The following properties are customizable:
 - mainViewShadowColor
 - animationDuration
 - menuIndentationEnabled
+- menuOverviewEnabled
 - swipeGestureEnabled
 - panGestureEnabled
 

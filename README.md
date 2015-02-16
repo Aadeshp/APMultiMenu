@@ -9,9 +9,7 @@
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
-#### Regular Side Menu
 ![Left Menu Image](https://cloud.githubusercontent.com/assets/8670066/6207143/b6df291e-b568-11e4-88f1-35e743403129.png)
-#### Overview Side Menu
 ![Right Overview Menu Image](https://cloud.githubusercontent.com/assets/8670066/6207148/bee9ccf4-b568-11e4-9aa3-982703936736.png)
 
 ## How To Use

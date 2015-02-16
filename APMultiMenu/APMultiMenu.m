@@ -28,26 +28,34 @@
 
 @interface APMultiMenu()
 
+//Views
+@property (nonatomic, strong) UIView *mainView;
+@property (nonatomic, strong) UIView *leftMenu;
+@property (nonatomic, strong) UIView *rightMenu;
+
 @property (nonatomic) CALayer *shadowLayer;
 
-@property (nonatomic, assign, readwrite) CGFloat xPos;
+//Tap Gesture
+@property (nonatomic) UITapGestureRecognizer *tapGesture;
+@property (nonatomic, assign) BOOL tapGestureEnabled;
+
+//Swipe Gesture
 @property (nonatomic) UISwipeGestureRecognizer *leftSwipeGesture;
 @property (nonatomic) UISwipeGestureRecognizer *rightSwipeGesture;
+@property (nonatomic, strong) UIImageView *backgroundView;
+
+//Pan Gesture
 @property (nonatomic) UIPanGestureRecognizer *panGesture;
+@property (nonatomic, assign, readwrite) CGFloat xPos;
 
-@property (nonatomic, strong) UIView *mainView;
-@property (nonatomic, readonly) CGRect mainViewOriginalFrame;
-@property (nonatomic, readonly) CGRect mainViewLeftMenuRevealedFrame;
-@property (nonatomic, readonly) CGRect mainViewRightMenuRevealedFrame;
-
-@property (nonatomic, strong) UIView *leftMenu;
+//Current Menu Status (Open/Close)
 @property (nonatomic, assign, readwrite) APMultiMenuStatus leftMenuStatus;
-
-@property (nonatomic, strong) UIView *rightMenu;
 @property (nonatomic, assign, readwrite) APMultiMenuStatus rightMenuStatus;
 
-@property (nonatomic, assign, readonly) APMultiMenuTransition currentTransition;
+//Current Transition Setup
+@property (nonatomic, assign, readwrite) APMultiMenuTransition currentTransition;
 
+//Private Setup
 - (void)defaultInit;
 - (void)setUpViewController:(APMultiMenuViewController)viewController;
 - (void)resizeView:(UIViewController *)viewController
@@ -98,6 +106,9 @@
 - (UISwipeGestureRecognizer *)swipeGestureRecognizerForMenu:(APMultiMenuType)menuType;
 - (void)handleLeftSwipe:(UISwipeGestureRecognizer *)recognizer;
 - (void)handleRightSwipe:(UISwipeGestureRecognizer *)recognizer;
+- (APMultiMenuStatus)getOppositeStatusFor:(APMultiMenuStatus)status;
+- (BOOL)isCurrentStatusForLeftMenu:(APMultiMenuStatus)leftMenuStatus
+         isRightMenuStatusOpposite:(BOOL)isOpposite;
 
 //PanGestureRecognizer Methods
 - (UIPanGestureRecognizer *)panGestureRecognizer;
@@ -163,6 +174,7 @@
         self.swipeGestureEnabled = NO;
         self.panGestureEnabled = NO;
         self.menuIndentationEnabled = NO;
+        self.menuOverviewEnabled = NO;
         _currentTransition = APMultiMenuTransitionNone;
         
         _mainViewController = mainViewController;
@@ -183,10 +195,16 @@
     self.mainViewShadowOpacity = 0.8f;
     self.mainViewShadowColor = [UIColor blackColor];
     self.mainViewShadowOffset = CGSizeMake(1, 1);
+    
+    _backgroundView = [[UIImageView alloc] init];
+    _backgroundView.alpha = 0.0f;
+    _backgroundView.backgroundColor = [UIColor blackColor];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    _backgroundView.frame = self.view.bounds;
     
     [self setUpViewController:APMultiMenuViewControllerLeft];
     [self setUpViewController:APMultiMenuViewControllerRight];
@@ -268,6 +286,23 @@
         
     if (_rightMenuStatus == APMultiMenuStatusOpen)
         [self toggleRightMenuWithAnimation:YES];
+    
+    if (!menuIndentationEnabled) {
+        _rightMenu.frame = [self rightMenuFrameForStatus:APMultiMenuStatusClose];
+        _leftMenu.frame = [self leftMenuFrameForStatus:APMultiMenuStatusClose];
+    }
+}
+
+- (void)setMenuOverviewEnabled:(BOOL)menuOverviewEnabled {
+    if (_menuOverviewEnabled == menuOverviewEnabled)
+        return;
+    
+    _menuOverviewEnabled = menuOverviewEnabled;
+    
+    if (_menuOverviewEnabled) {
+        [self setMenuIndentationEnabled:NO];
+        [self setPanGestureEnabled:NO];
+    }
 }
 
 #pragma mark - Add/Remove ViewControllers
@@ -291,9 +326,9 @@
 - (CGRect)mainViewFrameForPosition:(APMultiMenuMainViewPosition)position {
     CGRect frame = self.view.bounds;
     
-    if (position == APMultiMenuMainViewPositionLeft)
+    if (position == APMultiMenuMainViewPositionLeft && !_menuOverviewEnabled)
         frame.origin.x -= kMENU_WIDTH;
-    else if (position == APMultiMenuMainViewPositionRight)
+    else if (position == APMultiMenuMainViewPositionRight && !_menuOverviewEnabled)
         frame.origin.x += kMENU_WIDTH;
     
     return frame;
@@ -303,7 +338,9 @@
     CGRect frame = self.view.bounds;
     frame.size.width = kMENU_WIDTH;
 
-    if (status == APMultiMenuStatusClose && _menuIndentationEnabled)
+    if (status == APMultiMenuStatusClose && _menuOverviewEnabled)
+        frame.origin.x -= kMENU_WIDTH;
+    else if (status == APMultiMenuStatusClose && _menuIndentationEnabled)
         frame.origin.x -= kMENU_INDENT;
 
     return frame;
@@ -314,7 +351,9 @@
     frame.size.width = kMENU_WIDTH;
     frame.origin.x = self.view.frame.size.width - kMENU_WIDTH;
     
-    if (status == APMultiMenuStatusClose && _menuIndentationEnabled)
+    if (status == APMultiMenuStatusClose && _menuOverviewEnabled)
+        frame.origin.x += kMENU_WIDTH;
+    else if (status == APMultiMenuStatusClose && _menuIndentationEnabled)
         frame.origin.x += kMENU_INDENT;
     
     return frame;
@@ -471,12 +510,16 @@
 - (void)setMenuStatusForTransition:(APMultiMenuTransition)transition {
     if (transition == APMultiMenuTransitionToLeft) {
         _rightMenuStatus = APMultiMenuStatusOpen;
-        _leftMenuStatus = APMultiMenuStatusClose;
+        
+        if (_leftMenuStatus == APMultiMenuStatusOpen)
+            [self toggleLeftMenuWithAnimation:NO];
     } else if (transition == APMultiMenuTransitionResetFromLeft)
         _rightMenuStatus = APMultiMenuStatusClose;
     else if (transition == APMultiMenuTransitionToRight) {
         _leftMenuStatus = APMultiMenuStatusOpen;
-        _rightMenuStatus = APMultiMenuStatusClose;
+        
+        if (_rightMenuStatus == APMultiMenuStatusOpen)
+            [self toggleRightMenuWithAnimation:NO];
     } else if (transition == APMultiMenuTransitionResetFromRight)
         _leftMenuStatus = APMultiMenuStatusClose;
 }
@@ -553,11 +596,33 @@
         menuView.frame = [self getMenuFrameForTransition:transition];
         _mainView.frame = [self getMainViewFrameForTransition:transition];
     } else {
+        if (_menuOverviewEnabled)
+            [self.view bringSubviewToFront:menuView];
+        
         [UIView animateWithDuration:self.animationDuration animations:^{
             menuView.frame = [self getMenuFrameForTransition:transition];
             _mainView.frame = [self getMainViewFrameForTransition:transition];
+            
+            if ([self isOpenMenuAndOverEnabled]) {
+                [_mainView addSubview:_backgroundView];
+                _backgroundView.alpha = 0.7f;
+                [self enableTapGesture];
+            } else if ([self isCloseMenuAndOverviewEnabled]) {
+                _backgroundView.alpha = 0.0f;
+                [self removeTapGesture];
+            }
         } completion:completion];
     }
+    
+    [self fireDelegateMethodThatRespondsTo:transition fireBefore:NO];
+}
+
+- (BOOL)isOpenMenuAndOverEnabled {
+    return ((_leftMenuStatus == APMultiMenuStatusOpen || _rightMenuStatus == APMultiMenuStatusOpen) && _menuOverviewEnabled);
+}
+
+- (BOOL)isCloseMenuAndOverviewEnabled {
+    return ((_leftMenuStatus == APMultiMenuStatusClose && _rightMenuStatus == APMultiMenuStatusClose) && _menuOverviewEnabled);
 }
 
 #pragma mark - Open/Close Menu
@@ -571,7 +636,10 @@
     [self beginTransitionWith:transition
                      animated:animated
                    completion:^(BOOL finished) {
-                       [self fireDelegateMethodThatRespondsTo:transition fireBefore:NO];
+                       if (finished) {
+                           if ([self isCloseMenuAndOverviewEnabled])
+                               [_backgroundView removeFromSuperview];
+                       }
                    }];
 }
 
@@ -581,6 +649,49 @@
 
 - (void)toggleRightMenuWithAnimation:(BOOL)animated {
     [self toggleMenu:APMultiMenuTypeRightMenu animated:animated];
+}
+
+#pragma mark - UITapGestureRecognizer
+
+- (void)setTapGestureEnabled:(BOOL)tapGestureEnabled {
+    if (_tapGestureEnabled == tapGestureEnabled)
+        return;
+    
+    _tapGestureEnabled = tapGestureEnabled;
+    
+    if (tapGestureEnabled)
+        [self enableTapGesture];
+    else
+        [self removeTapGesture];
+}
+
+- (void)enableTapGesture {
+    if (!_tapGesture)
+        _tapGesture = [self tapGestureRecognizer];
+    
+    [_mainView addGestureRecognizer:_tapGesture];
+}
+
+- (void)removeTapGesture {
+    if (!_tapGesture)
+        return;
+    
+    [_mainView removeGestureRecognizer:_tapGesture];
+}
+
+- (UITapGestureRecognizer *)tapGestureRecognizer {
+    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+    [tapGestureRecognizer setNumberOfTapsRequired:1];
+    
+    return tapGestureRecognizer;
+}
+
+- (void)handleTap:(UITapGestureRecognizer *)recognizer {
+    if (_leftMenuStatus == APMultiMenuStatusOpen)
+        [self toggleLeftMenuWithAnimation:YES];
+    
+    if (_rightMenuStatus == APMultiMenuStatusOpen)
+        [self toggleRightMenuWithAnimation:YES];
 }
 
 #pragma mark - UISwipeGestureRecognizer
@@ -647,17 +758,34 @@
         return nil;
 }
 
+- (APMultiMenuStatus)getOppositeStatusFor:(APMultiMenuStatus)status {
+    if (status == APMultiMenuStatusOpen)
+        return APMultiMenuStatusClose;
+    else
+        return APMultiMenuStatusOpen;
+}
+
+- (BOOL)isCurrentStatusForLeftMenu:(APMultiMenuStatus)leftMenuStatus
+         isRightMenuStatusOpposite:(BOOL)isOpposite {
+    APMultiMenuStatus rightMenuStatus = leftMenuStatus;
+    
+    if (isOpposite)
+        rightMenuStatus = [self getOppositeStatusFor:leftMenuStatus];
+        
+    return (_leftMenuStatus == leftMenuStatus && _rightMenuStatus == rightMenuStatus);
+}
+
 - (void)handleRightSwipe:(UISwipeGestureRecognizer *)recognizer {
-    if (_leftMenuStatus == APMultiMenuStatusClose)
+    if ([self isCurrentStatusForLeftMenu:APMultiMenuStatusClose isRightMenuStatusOpposite:NO])
         [self toggleLeftMenuWithAnimation:YES];
-    else if (_rightMenuStatus == APMultiMenuStatusOpen)
-        [self toggleLeftMenuWithAnimation:YES];
+    else if ([self isCurrentStatusForLeftMenu:APMultiMenuStatusClose isRightMenuStatusOpposite:YES])
+        [self toggleRightMenuWithAnimation:YES];
 }
 
 - (void)handleLeftSwipe:(UISwipeGestureRecognizer *)recognizer {
-    if (_leftMenuStatus == APMultiMenuStatusOpen)
+    if ([self isCurrentStatusForLeftMenu:APMultiMenuStatusOpen isRightMenuStatusOpposite:YES])
         [self toggleLeftMenuWithAnimation:YES];
-    else if (_rightMenuStatus == APMultiMenuStatusClose)
+    else if ([self isCurrentStatusForLeftMenu:APMultiMenuStatusClose isRightMenuStatusOpposite:NO])
         [self toggleRightMenuWithAnimation:YES];
 }
 
@@ -669,7 +797,9 @@
     
     _panGestureEnabled = panGestureEnabled;
     
-    if (panGestureEnabled) {
+    if (panGestureEnabled && _menuOverviewEnabled)
+        _panGestureEnabled = NO;
+    else if (panGestureEnabled && !_menuOverviewEnabled) {
         [self enablePanGesture];
         [self setSwipeGestureEnabled:NO];
     } else
@@ -737,9 +867,9 @@
             if (_xPos <= kMENU_WIDTH && _xPos >= 0)
                 [self translateMenu:APMultiMenuTypeLeftMenu
                         translation:translation
-                             recognizer:recognizer
-                              newCenter:newCenter
-                             transition:APMultiMenuTransitionResetFromRight];
+                         recognizer:recognizer
+                          newCenter:newCenter
+                         transition:APMultiMenuTransitionResetFromRight];
             else if (_xPos >= (-1 * kMENU_WIDTH) && _xPos < 0)
                 [self translateMenu:APMultiMenuTypeRightMenu
                         translation:translation

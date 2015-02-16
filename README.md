@@ -9,7 +9,11 @@
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
-![Left Menu Image](https://cloud.githubusercontent.com/assets/8670066/6205063/26d5ba6a-b52f-11e4-80dc-3934f5922c88.png)
+#### Regular Side Menu
+![Left Menu Image](https://cloud.githubusercontent.com/assets/8670066/6206854/af2a0ede-b561-11e4-8362-6407d939e8d8.png)
+
+#### Overview Side Menu
+![Right Overview Menu Image](https://cloud.githubusercontent.com/assets/8670066/6206837/6f316aca-b561-11e4-825f-6f3350843bac.png)
 
 ## How To Use
 
@@ -111,7 +115,7 @@ And add the directory ```APMultiMenu/``` to your project
 
 ## Coming Soon
 
-- Over View Menus As Opposed to Under View Menus
+- Over View Menus As Opposed to Under View Menus (Currently Under Development)
 - More Customization
 
 ## Author

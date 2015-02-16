@@ -109,6 +109,11 @@ $ git clone https://github.com/Aadeshp/APMultiMenu.git
 ```
 And add the directory ```APMultiMenu/``` to your project
 
+## Coming Soon
+
+- Over View Menus As Opposed to Under View Menus
+- More Customization
+
 ## Author
 
 Aadesh Patel, aadeshp95@gmail.com

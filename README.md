@@ -10,10 +10,10 @@
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
 # Regular Side Menu
-![Left Menu Image](https://cloud.githubusercontent.com/assets/8670066/6205063/26d5ba6a-b52f-11e4-80dc-3934f5922c88.png)
+![Left Menu Image](https://cloud.githubusercontent.com/assets/8670066/6206854/af2a0ede-b561-11e4-8362-6407d939e8d8.png)
 
 # Overview Side Menu
-![Overview Menu Image](https://cloud.githubusercontent.com/assets/8670066/6206823/065d0ba8-b561-11e4-914d-e28f8c7a25cd.png)
+![Right Overview Menu Image](https://cloud.githubusercontent.com/assets/8670066/6206837/6f316aca-b561-11e4-825f-6f3350843bac.png)
 
 ## How To Use
 

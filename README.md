@@ -13,7 +13,7 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 ![Left Menu Image](https://cloud.githubusercontent.com/assets/8670066/6205063/26d5ba6a-b52f-11e4-80dc-3934f5922c88.png)
 
 # Overview Side Menu
-![Overview Menu Image](https://cloud.githubusercontent.com/assets/8670066/6206816/b84cad06-b560-11e4-94d5-9666fa023456.png)
+![Overview Menu Image](https://cloud.githubusercontent.com/assets/8670066/6206823/065d0ba8-b561-11e4-914d-e28f8c7a25cd.png)
 
 ## How To Use
 

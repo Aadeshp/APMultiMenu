@@ -81,6 +81,10 @@
 - (UIView *)getMenuViewForTransition:(APMultiMenuTransition)transition;
 - (UIViewController *)getMenuViewControllerForTransition:(APMultiMenuTransition)transition;
 
+//Update Methods
+- (void)updateMenuFrame:(APMultiMenuType)menuType;
+- (void)updateBackgroundOverview;
+
 //Get Current Transition For Menu Type
 - (APMultiMenuTransition)getTransitionForMenuType:(APMultiMenuType)menuType;
 
@@ -369,11 +373,17 @@
     return frame;
 }
 
+#pragma mark - Update Methods
+
 - (void)updateMenuFrame:(APMultiMenuType)menuType {
     if (menuType == APMultiMenuTypeLeftMenu)
         _leftMenu.frame = [self leftMenuFrameForStatus:_leftMenuStatus];
     else if (menuType == APMultiMenuTypeRightMenu)
         _rightMenu.frame = [self rightMenuFrameForStatus:_rightMenuStatus];
+}
+
+- (void)updateBackgroundOverview {
+    _backgroundView.frame = self.view.bounds;
 }
 
 #pragma mark - UIView Manipulation
@@ -406,6 +416,9 @@
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    if (_menuOverviewEnabled)
+        [self updateBackgroundOverview];
+
     [self updateMenuFrame:APMultiMenuTypeLeftMenu];
     [self updateMenuFrame:APMultiMenuTypeRightMenu];
 }

@@ -111,7 +111,7 @@ And add the directory ```APMultiMenu/``` to your project
 
 ## Coming Soon
 
-- Over View Menus As Opposed to Under View Menus
+- Over View Menus As Opposed to Under View Menus (Currently Under Development)
 - More Customization
 
 ## Author

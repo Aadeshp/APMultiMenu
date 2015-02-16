@@ -91,12 +91,4 @@
                    animated:(BOOL)animated
                  completion:(void(^)(BOOL))completion;
 
-//Adds Swipe Gesture to Main View
-- (void)enableSwipeGesture;
-- (void)removeSwipeGesture;
-
-//Adds Pan Gesture to Main View
-- (void)enablePanGesture;
-- (void)removePanGesture;
-
 @end

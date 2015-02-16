@@ -102,6 +102,12 @@
 - (void)toggleMenu:(APMultiMenuType)menuType
           animated:(BOOL)animated;
 
+//TapGestureRecognizer Methods
+- (UITapGestureRecognizer *)tapGestureRecognizer;
+- (void)handleTap:(UITapGestureRecognizer *)recognizer;
+- (void)enableTapGesture;
+- (void)removeTapGesture;
+
 //SwipeGestureRecognizer Methods
 - (UISwipeGestureRecognizer *)swipeGestureRecognizerForMenu:(APMultiMenuType)menuType;
 - (void)handleLeftSwipe:(UISwipeGestureRecognizer *)recognizer;
@@ -109,6 +115,8 @@
 - (APMultiMenuStatus)getOppositeStatusFor:(APMultiMenuStatus)status;
 - (BOOL)isCurrentStatusForLeftMenu:(APMultiMenuStatus)leftMenuStatus
          isRightMenuStatusOpposite:(BOOL)isOpposite;
+- (void)enableSwipeGesture;
+- (void)removeSwipeGesture;
 
 //PanGestureRecognizer Methods
 - (UIPanGestureRecognizer *)panGestureRecognizer;
@@ -125,6 +133,8 @@
                 recognizer:(UIPanGestureRecognizer *)recognizer
              withNewCenter:(CGPoint)newCenter;
 - (void)sendSubViewToBackForTransition:(APMultiMenuTransition)transition;
+- (void)enablePanGesture;
+- (void)removePanGesture;
 
 @end
 
@@ -359,6 +369,13 @@
     return frame;
 }
 
+- (void)updateMenuFrame:(APMultiMenuType)menuType {
+    if (menuType == APMultiMenuTypeLeftMenu)
+        _leftMenu.frame = [self leftMenuFrameForStatus:_leftMenuStatus];
+    else if (menuType == APMultiMenuTypeRightMenu)
+        _rightMenu.frame = [self rightMenuFrameForStatus:_rightMenuStatus];
+}
+
 #pragma mark - UIView Manipulation
 
 - (void)resizeView:(UIViewController *)viewController
@@ -379,14 +396,18 @@
     [view sizeThatFits:CGSizeMake(kMENU_WIDTH, self.view.frame.size.height)];
 }
 
-#pragma mark - Handle Rotations So Frames Don't Get Misplaced
+#pragma mark - Handle Rotations So Menus Don't Get Misplaced
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    if ([self isCurrentStatusForLeftMenu:APMultiMenuStatusOpen isRightMenuStatusOpposite:YES])
+        [self toggleLeftMenuWithAnimation:NO];
+    else if ([self isCurrentStatusForLeftMenu:APMultiMenuStatusClose isRightMenuStatusOpposite:YES])
+        [self toggleRightMenuWithAnimation:NO];
+}
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    if (_leftMenuStatus == APMultiMenuStatusClose)
-        _leftMenu.frame = [self leftMenuFrameForStatus:APMultiMenuStatusClose];
-    
-    if (_rightMenuStatus == APMultiMenuStatusClose)
-        _rightMenu.frame = [self rightMenuFrameForStatus:APMultiMenuStatusClose];
+    [self updateMenuFrame:APMultiMenuTypeLeftMenu];
+    [self updateMenuFrame:APMultiMenuTypeRightMenu];
 }
 
 #pragma mark - Change MainViewController

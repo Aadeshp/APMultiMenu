@@ -56,23 +56,20 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <searchBar contentMode="redraw" barStyle="black" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k6e-Uy-hn0">
+                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="gQR-kX-VFe">
                                 <rect key="frame" x="0.0" y="20" width="320" height="44"/>
-                                <color key="barTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <offsetWrapper key="searchTextPositionAdjustment" horizontal="0.0" vertical="0.0"/>
                                 <textInputTraits key="textInputTraits"/>
                             </searchBar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="fff-hv-70Y" secondAttribute="trailing" id="BIQ-RP-YMv"/>
-                            <constraint firstItem="k6e-Uy-hn0" firstAttribute="top" secondItem="AXI-kA-sIV" secondAttribute="bottom" id="Kn2-fK-yd5"/>
+                            <constraint firstItem="gQR-kX-VFe" firstAttribute="top" secondItem="AXI-kA-sIV" secondAttribute="bottom" id="CRS-lU-cYo"/>
+                            <constraint firstAttribute="trailing" secondItem="gQR-kX-VFe" secondAttribute="trailing" id="Mu2-J7-MYv"/>
                             <constraint firstItem="fff-hv-70Y" firstAttribute="leading" secondItem="nQH-HZ-J2T" secondAttribute="leading" id="ZVB-qo-S7c"/>
-                            <constraint firstItem="fff-hv-70Y" firstAttribute="top" secondItem="k6e-Uy-hn0" secondAttribute="bottom" id="h47-X9-ybM"/>
-                            <constraint firstAttribute="trailing" secondItem="k6e-Uy-hn0" secondAttribute="trailing" id="hZw-wv-IVP"/>
-                            <constraint firstItem="k6e-Uy-hn0" firstAttribute="top" secondItem="AXI-kA-sIV" secondAttribute="bottom" id="l4I-kZ-bGr"/>
-                            <constraint firstItem="k6e-Uy-hn0" firstAttribute="leading" secondItem="nQH-HZ-J2T" secondAttribute="leading" id="nZl-dT-9Id"/>
                             <constraint firstItem="unm-bl-piA" firstAttribute="top" secondItem="fff-hv-70Y" secondAttribute="bottom" id="p9z-Qd-3SV"/>
+                            <constraint firstItem="fff-hv-70Y" firstAttribute="top" secondItem="gQR-kX-VFe" secondAttribute="bottom" id="tSV-t6-uti"/>
+                            <constraint firstItem="gQR-kX-VFe" firstAttribute="leading" secondItem="nQH-HZ-J2T" secondAttribute="leading" id="xmF-u6-2wi"/>
                         </constraints>
                     </view>
                     <connections>

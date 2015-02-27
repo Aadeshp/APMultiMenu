@@ -43,6 +43,7 @@
     apmm.mainViewShadowRadius = 6.0f;
     apmm.mainViewShadowEnabled = YES;
     
+    apmm.menuIndentationEnabled = YES;
     apmm.panGestureEnabled = YES;
     
     self.window.rootViewController = apmm;

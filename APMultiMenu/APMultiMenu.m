@@ -113,10 +113,10 @@
           animated:(BOOL)animated;
 
 //TapGestureRecognizer Methods
-- (UITapGestureRecognizer *)tapGestureRecognizer;
+/*- (UITapGestureRecognizer *)tapGestureRecognizer;
 - (void)handleTap:(UITapGestureRecognizer *)recognizer;
 - (void)enableTapGesture;
-- (void)removeTapGesture;
+- (void)removeTapGesture;*/
 
 //SwipeGestureRecognizer Methods
 /*- (UISwipeGestureRecognizer *)swipeGestureRecognizerForMenu:(APMultiMenuType)menuType;
@@ -658,7 +658,7 @@
 
 #pragma mark - UITapGestureRecognizer
 
-- (void)setTapGestureEnabled:(BOOL)tapGestureEnabled {
+/*- (void)setTapGestureEnabled:(BOOL)tapGestureEnabled {
     if (_tapGestureEnabled == tapGestureEnabled)
         return;
     
@@ -697,7 +697,7 @@
     
     if (_rightMenuStatus == APMultiMenuStatusOpen)
         [self toggleRightMenuWithAnimation:YES];
-}
+}*/
 
 #pragma mark - UISwipeGestureRecognizer
 

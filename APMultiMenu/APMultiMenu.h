@@ -64,7 +64,7 @@
 
 //PanGesture Variables
 @property (nonatomic, assign) BOOL panGestureEnabled;
-@property (nonatomic, assign) BOOL swipeGestureEnabled;
+//@property (nonatomic, assign) BOOL swipeGestureEnabled;
 
 //Initializations
 - (instancetype)init;

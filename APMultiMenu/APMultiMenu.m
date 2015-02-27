@@ -37,8 +37,8 @@
 @property (nonatomic) CALayer *shadowLayer;
 
 //Tap Gesture
-@property (nonatomic) UITapGestureRecognizer *tapGesture;
-@property (nonatomic, assign) BOOL tapGestureEnabled;
+//@property (nonatomic) UITapGestureRecognizer *tapGesture;
+//@property (nonatomic, assign) BOOL tapGestureEnabled;
 
 //Swipe Gesture
 @property (nonatomic) UISwipeGestureRecognizer *leftSwipeGesture;

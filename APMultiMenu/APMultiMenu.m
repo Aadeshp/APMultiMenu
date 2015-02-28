@@ -41,9 +41,8 @@
 //@property (nonatomic, assign) BOOL tapGestureEnabled;
 
 //Swipe Gesture
-@property (nonatomic) UISwipeGestureRecognizer *leftSwipeGesture;
-@property (nonatomic) UISwipeGestureRecognizer *rightSwipeGesture;
-@property (nonatomic, strong) UIImageView *backgroundView;
+//@property (nonatomic) UISwipeGestureRecognizer *leftSwipeGesture;
+//@property (nonatomic) UISwipeGestureRecognizer *rightSwipeGesture;
 
 //Pan Gesture
 @property (nonatomic) UIPanGestureRecognizer *panGesture;
@@ -209,16 +208,10 @@
     self.mainViewShadowOpacity = 0.8f;
     self.mainViewShadowColor = [UIColor blackColor];
     self.mainViewShadowOffset = CGSizeMake(1, 1);
-    
-    _backgroundView = [[UIImageView alloc] init];
-    _backgroundView.alpha = 0.0f;
-    _backgroundView.backgroundColor = [UIColor blackColor];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    _backgroundView.frame = self.view.bounds;
     
     [self setUpViewController:APMultiMenuViewControllerLeft];
     [self setUpViewController:APMultiMenuViewControllerRight];

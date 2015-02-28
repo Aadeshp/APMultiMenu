@@ -1,5 +1,5 @@
 PODS:
-  - APMultiMenu (0.6.6)
+  - APMultiMenu (0.8.3)
 
 DEPENDENCIES:
   - APMultiMenu (from `../`)
@@ -9,6 +9,6 @@ EXTERNAL SOURCES:
     :path: ../
 
 SPEC CHECKSUMS:
-  APMultiMenu: 0bef92a5a4b81a56d5b3d42719675abceaaaffde
+  APMultiMenu: 2b842465f48d3f9f0156d753165f6f219433c54c
 
 COCOAPODS: 0.36.0.beta.2

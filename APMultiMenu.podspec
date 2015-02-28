@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "APMultiMenu"
-  s.version          = "0.8.3"
+  s.version          = "0.8.4"
   s.summary          = "APMultiMenu is a viewcontroller container for left and right slideout menus with customization features"
   s.description      = <<-DESC
                        APMultiMenu is a viewcontroller container for left and right slideout menus that supports two different types of menus: static and indentation. APMultiMenu also offers customization for shadows, gestures, animations, and more

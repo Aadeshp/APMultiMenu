@@ -10,7 +10,6 @@
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
 ![Left Menu Image](https://cloud.githubusercontent.com/assets/8670066/6207143/b6df291e-b568-11e4-88f1-35e743403129.png)
-![Right Overview Menu Image](https://cloud.githubusercontent.com/assets/8670066/6207148/bee9ccf4-b568-11e4-9aa3-982703936736.png)
 ![Left Menu Landscape Image](https://cloud.githubusercontent.com/assets/8670066/6207234/290ebcb4-b56b-11e4-93df-82b0a8f36afa.png)
 
 ![Right Menu Image iPad](https://cloud.githubusercontent.com/assets/8670066/6207329/474ab4c4-b56d-11e4-8013-0006b5e264a3.png)
@@ -96,8 +95,6 @@ The following properties are customizable:
 - mainViewShadowColor
 - animationDuration
 - menuIndentationEnabled
-- menuOverviewEnabled
-- swipeGestureEnabled
 - panGestureEnabled
 
 ## Installation

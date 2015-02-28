@@ -187,7 +187,6 @@
     if (self = [self init]) {
         NSParameterAssert(mainViewController);
         
-        self.swipeGestureEnabled = NO;
         self.panGestureEnabled = NO;
         self.menuIndentationEnabled = NO;
         _currentTransition = APMultiMenuTransitionNone;

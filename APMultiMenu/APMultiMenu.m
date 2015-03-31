@@ -37,7 +37,7 @@
 @property (nonatomic) CALayer *shadowLayer;
 
 //Tap Gesture
-//@property (nonatomic) UITapGestureRecognizer *tapGesture;
+@property (nonatomic) UITapGestureRecognizer *tapGesture;
 //@property (nonatomic, assign) BOOL tapGestureEnabled;
 
 //Swipe Gesture
@@ -650,7 +650,7 @@
 
 #pragma mark - UITapGestureRecognizer
 
-/*- (void)setTapGestureEnabled:(BOOL)tapGestureEnabled {
+- (void)setTapGestureEnabled:(BOOL)tapGestureEnabled {
     if (_tapGestureEnabled == tapGestureEnabled)
         return;
     
@@ -689,7 +689,7 @@
     
     if (_rightMenuStatus == APMultiMenuStatusOpen)
         [self toggleRightMenuWithAnimation:YES];
-}*/
+}
 
 #pragma mark - UISwipeGestureRecognizer
 

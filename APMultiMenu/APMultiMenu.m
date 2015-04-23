@@ -615,6 +615,7 @@
     if (!animated) {
         menuView.frame = [self getMenuFrameForTransition:transition];
         _mainView.frame = [self getMainViewFrameForTransition:transition];
+      completion(YES);
     } else {
         [UIView animateWithDuration:self.animationDuration animations:^{
             menuView.frame = [self getMenuFrameForTransition:transition];

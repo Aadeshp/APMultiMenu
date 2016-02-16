@@ -47,9 +47,9 @@
 @property (nonatomic, strong) UIViewController *leftMenuViewController;
 @property (nonatomic, strong) UIViewController *rightMenuViewController;
 
-@property (nonatomic) NSString *mainViewControllerStoryboardID;
-@property (nonatomic) NSString *leftMenuViewControllerStoryboardID;
-@property (nonatomic) NSString *rightMenuViewControllerStoryboardID;
+@property (nonatomic, strong) NSString *mainViewControllerStoryboardID;
+@property (nonatomic, strong) NSString *leftMenuViewControllerStoryboardID;
+@property (nonatomic, strong) NSString *rightMenuViewControllerStoryboardID;
 
 //Shadow Variables
 @property (nonatomic, assign) BOOL mainViewShadowEnabled;
